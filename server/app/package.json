@@ -1,0 +1,23 @@
+{
+  "name": "hypertube",
+  "version": "1.0.0",
+  "description": "This project proposes to create a web application that allows the user to research and watch videos.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "kkhabour",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^2.0.7",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "body-parser": "^1.19.0",
+    "mysql": "^2.18.1",
+    "bcrypt": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "nodemailer": "^6.5.0",
+    "axios": "^0.21.1"
+  }
+}
