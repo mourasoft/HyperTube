@@ -7,9 +7,14 @@ const generate = (user) => {
 }
 
 const verify = async(req, res, next) => {
-    const token = req.headers.authorization.split(' ')[1];
+    const authorization = req.headers.authorization;
 
-    if (token == null) return res.status(401).json({'status': 401, 'message': 'missing header'});
+    if (!authorization)
+        return res.status(400).json( {'status': 400, 'message': 'missing header'});
+    
+    const token = authorization.split(' ')[1];
+
+    if (token == null) return res.status(401).json({'status': 401, 'message': 'missing token'});
 
     jwt.verify(token, config.secret, async (err, user) => {
         if (err)

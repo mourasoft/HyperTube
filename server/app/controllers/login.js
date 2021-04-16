@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
         await db.pool.query(`INSERT INTO \`tokens\`(\`user_id\`, \`type\`, \`token\`) 
         VALUES ('${user.id}', 'access', '${t}') ON DUPLICATE KEY UPDATE token = '${t}'`);
 
-        res.status(403).json({ 
+        res.status(200).json({ 
             'status': 200, 
             'message': 'logged successfuly',
             'data': user,

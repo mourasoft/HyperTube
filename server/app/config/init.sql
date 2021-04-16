@@ -26,10 +26,12 @@ CREATE TABLE `tokens` (
 
 CREATE TABLE `movies` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `imdb_code` VARCHAR(255) NOT NULL,
-    `name` VARCHAR(255) NOT NULL,
+    `hash` VARCHAR(255) NOT NULL,
+    `status` ENUM('N', 'D', 'F') DEFAULT 'N',
     `path` TEXT DEFAULT NULL,
-    `created_at` DATETIME DEFAULT NOW()
+    `last_seen` DATETIME DEFAULT NOW(),
+    `created_at` DATETIME DEFAULT NOW(),
+    UNIQUE KEY (`hash`)
 );
 
 CREATE TABLE `watches` (

@@ -18,6 +18,8 @@
     "bcrypt": "^5.0.1",
     "jsonwebtoken": "^8.5.1",
     "nodemailer": "^6.5.0",
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "torrent-stream": "1.2.1",
+    "mime-types": "^2.1.30"
   }
 }
