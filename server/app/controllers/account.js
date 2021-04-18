@@ -19,7 +19,7 @@ exports.me = async (req, res) => {
 
         res.status(200).json( {'status': 200, 'message': 'success', 'user': user});
     } catch(error) {
-        req.status(500).json({'status': 500, 'message': error.message});
+        res.status(500).json({'status': 500, 'message': error.message});
     }
 }
 

@@ -26,11 +26,20 @@ CREATE TABLE `tokens` (
 
 CREATE TABLE `movies` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `imdb` VARCHAR(255) NOT NULL,
+    `last_seen` DATETIME DEFAULT NOW(),
+    `created_at` DATETIME DEFAULT NOW(),
+    UNIQUE KEY (`imdb`)
+);
+
+CREATE TABLE `hashes` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `movie_id` INT NOT NULL,
     `hash` VARCHAR(255) NOT NULL,
     `status` ENUM('N', 'D', 'F') DEFAULT 'N',
     `path` TEXT DEFAULT NULL,
-    `last_seen` DATETIME DEFAULT NOW(),
     `created_at` DATETIME DEFAULT NOW(),
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`),
     UNIQUE KEY (`hash`)
 );
 

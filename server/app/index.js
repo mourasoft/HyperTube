@@ -4,20 +4,13 @@ const app = express();
 const config = require('./config/config');
 const routes = require('./routes/routes');
 
+const cors = require('cors');
 
+
+app.use(cors());
 
 app.use(bodyparser.json({limit: '5mb'}));
 app.use('/images', express.static('images')); 
-
-
-app.use((req, res, next) => {
-	
-	res.header("Access-Control-Allow-Headers", "*");
-	res.header("Access-Control-Allow-Origin", '*');
-	res.header("Access-Control-Allow-Methods", "*");
-
-	next();
-});
 
 app.use((req, res, next) => {
 	console.log('a request made from:', req.hostname);

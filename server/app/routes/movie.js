@@ -4,7 +4,7 @@ const movie = require('../controllers/movie');
 
 
 router.post('/', movie.movie);
-router.use('/stream/:hash', movie.stream);
+router.use('/stream/:imdb/:hash', movie.stream);
 
 
 

@@ -15,11 +15,11 @@ exports.reset_password = async (user) => {
 		let q = `INSERT INTO \`tokens\`(\`user_id\`, \`type\`, \`token\` ) VALUES ('${user.id}','password', '${token}') ON DUPLICATE KEY UPDATE token = '${token}';`;
 		await db.pool.query(q);
 
-		let url = `http://10.12.7.13:${config.ports.client}/reset/${token}`;
+		let url = `http://10.12.7.15:${config.ports.client}/reset/${token}`;
 		let options = {
 			"from": '"Hypertube" <hypertube@1337.ma>',
 			"to": user.email,
-			"subject": "MATCHA - Password reset",
+			"subject": "Hypertube - Password reset",
 			"html": `<a href='${url}'>Please, click here to reset your password.</a>`
 		};	
 
@@ -48,7 +48,7 @@ exports.confirm_account = async (email) => {
 		let q = `INSERT INTO \`tokens\`(\`user_id\`, \`type\`, \`token\` ) VALUES ('${data[0].id}','email', '${token}') ON DUPLICATE KEY UPDATE token = '${token}';`;
 		await db.pool.query(q);
 	
-		let url = `http://10.12.7.13:${config.ports.client}/confirm/${token}`;
+		let url = `http://10.12.7.15:${config.ports.client}/confirm/${token}`;
 		let options = {
 			"from": '"Hypertube" <hypertube@1337.ma>',
 			"to": email,
