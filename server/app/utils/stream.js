@@ -5,11 +5,15 @@ const mime = require('mime-types');
 const db = require('../utils/db');
 
 
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+const ffmpeg = require("fluent-ffmpeg");
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 
 
-exports.torrent = (res, range, m) => {
+exports.torrent = async (res, range, m) => {
     
+    console.log('stream torrent', m.hash);
     try {
         const engine = torrentStream(`magnet:?xt=urn:btih:${m.hash}`, {
             trackers: [
@@ -62,7 +66,26 @@ exports.torrent = (res, range, m) => {
             
                     stream.pipe(res);
 
-                }
+                } else if ('video/x-matroska' == contentType) {
+
+                    if (m.status == 'N') {
+                        console.log(m.hash, 'start downloading...');
+                        file.select();
+                        await db.update('hashes', 'status', 'D', 'hash', m.hash);
+                        await db.update('hashes', 'path', `${config.path}/movies/${m.hash}/${file.path}`, 'hash', m.hash);
+                    }
+
+                    ///usr/bin/ffmpeg /usr/share/ffmpeg /usr/share/man/man1/ffmpeg.1.gz
+                    const stream = file.createReadStream();
+
+                    ffmpeg(stream)
+                    .format('webm')
+                    .on("start", () => console.log("Conversion started..."))
+                    .on("error", error => { console.log('Conversion error', error)})
+                    .stream().pipe(res);
+
+                } else
+                    res.status(415).end();
                 
         });
 
@@ -83,6 +106,7 @@ exports.torrent = (res, range, m) => {
             if (engine.swarm.downloaded >= file.length) {
                 console.log(engine.infoHash, 'downloaded successfully', engine.swarm.downloaded, '/', file.length);
                 await db.update('hashes', 'status', 'F', 'hash', m.hash);
+                engine.destroy();
             }
         });
     
@@ -95,10 +119,11 @@ exports.torrent = (res, range, m) => {
 
 exports.local = (res, range, m) => {
 
+    console.log('stream local', m.hash);
     try {
 
         const contentType = mime.lookup(m.path);
-
+        
         // get video stats (about 61MB)
         const videoSize = fs.statSync(m.path).size;
     
@@ -127,4 +152,23 @@ exports.local = (res, range, m) => {
     } catch (error) {
         throw error;
     }
+}
+
+
+
+const convert = (file, thread = 4) => {
+	const converted = new ffmpeg(file.createReadStream())
+		.videoCodec('libvpx')
+		.audioCodec('libvorbis')
+		.format('webm')
+		.audioBitrate(128)
+		.videoBitrate(8000)
+		.outputOptions([
+			`-threads ${thread}`,
+			'-deadline realtime',
+			'-error-resilient 1'
+		])
+		.on('error', err => converted.destroy())
+		.stream()
+	return converted
 }

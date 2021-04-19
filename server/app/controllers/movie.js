@@ -19,10 +19,19 @@ exports.stream = async (req, res) => {
     const hash = req.params.hash;
     const range = req.headers.range;
 
-    if (!hash)
+
+    if (!hash || hash === undefined) {
+        console.log('hash error', hash);
         return res.status(400).send("Requires hash param");
 
-    if (!range)
+    }
+
+    if (!imdb || imdb === undefined) {
+        console.log('imdb error', imdb);
+        return res.status(400).send("Requires hash param");
+    }
+
+    if (!range || range === undefined)
         return res.status(400).send("Requires Range header");
 
     try {
@@ -38,6 +47,7 @@ exports.stream = async (req, res) => {
             stream.torrent(res, range, m);
 
     } catch (error) {
+        res.status(400).end;
         console.log('stream error:', error);
     }
 }

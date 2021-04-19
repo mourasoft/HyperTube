@@ -21,7 +21,9 @@
     "axios": "^0.21.1",
     "torrent-stream": "1.2.1",
     "mime-types": "^2.1.30",
-    "ffmpeg": "^0.0.4",
-    "cors": "2.8.5"
+    "cors": "2.8.5",
+    "fluent-ffmpeg": "2.1.2",
+    "@ffmpeg-installer/ffmpeg":"^1.0.20",
+    "opensubtitles-api": "^5.1.2"
   }
 }
