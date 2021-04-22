@@ -8,25 +8,8 @@ import Movie from "./pages/movie";
 import { useEffect } from "react";
 
 function App() {
-  // console.log(authContext)
-
-  // function isAuthenticated() {
-  //   console.log(authContext.auth.token)
-  //   if (authContext.auth.token !== undefined && authContext.auth.token)
-  //     return true;
-  //   else return false;
-  // }
-
   const isAuthenticated = IsLoggedfn();
   console.log(isAuthenticated);
-  // useEffect(
-  //   (isAuthenticated) => {
-  //     if (isAuthenticated !== undefined) {
-  //       console.log(isAuthenticated);
-  //     }
-  //   },
-  //   [isAuthenticated]
-  // );
 
   return (
     <Router>
