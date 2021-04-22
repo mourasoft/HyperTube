@@ -65,7 +65,6 @@ export const IsLoggedfn = () => {
   const {
     auth: { token },
   } = useContext(AuthContext);
-  console.log(token);
   return token;
 };
 

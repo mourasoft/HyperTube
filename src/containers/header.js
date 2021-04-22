@@ -13,7 +13,7 @@ export function HeaderContainer() {
   const history = useHistory();
 
   const LogoutFn = () => {
-    setAuth({ token: "" });
+    setAuth("");
     localStorage.clear();
     history.go("/");
   };
@@ -42,28 +42,27 @@ function Logged({ LogoutFn }) {
     <Header>
       <Header.Frame>
         <Header.Logo to={ROUTES.HOME} src={logo} alt="Hypertube" />
-        
-       <div style={{'display': 'flex'}}>
-      
-       <Button to="/library">
-          <i>
-            <MovieIcon style={{'color': '#dc1b28'}}/>
-          </i>
-        </Button>
-        
-       <Avatar
-          onClick={() => {
-            history.push("/updatedata");
-            console.log("clicked");
-          }}
-          src={`https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=3152&q=80`}
-        />
-        <Button onClick={() => LogoutFn()}>
-          <i>
-            <LogoutIcon style={{'color': '#dc1b28'}}/>
-          </i>
-        </Button>
-       </div>
+
+        <div style={{ display: "flex" }}>
+          <Button to="/library">
+            <i>
+              <MovieIcon style={{ color: "#dc1b28" }} />
+            </i>
+          </Button>
+
+          <Avatar
+            onClick={() => {
+              history.push("/updatedata");
+              console.log("clicked");
+            }}
+            src={`https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=3152&q=80`}
+          />
+          <Button onClick={() => LogoutFn()}>
+            <i>
+              <LogoutIcon style={{ color: "#dc1b28" }} />
+            </i>
+          </Button>
+        </div>
       </Header.Frame>
     </Header>
   );

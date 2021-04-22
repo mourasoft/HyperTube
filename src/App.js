@@ -1,6 +1,14 @@
 // import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Signin, Signup, Forgot, Confirm, Updatedata, Reset, User } from "./pages";
+import {
+  Signin,
+  Signup,
+  Forgot,
+  Confirm,
+  Updatedata,
+  Reset,
+  User,
+} from "./pages";
 // import * as ROUTES from "./constants/routes";
 import { AuthProvider, IsLoggedfn } from "./context/context";
 import Library from "./pages/Library";
@@ -9,7 +17,6 @@ import { useEffect } from "react";
 
 function App() {
   const isAuthenticated = IsLoggedfn();
-  console.log(isAuthenticated);
 
   return (
     <Router>
