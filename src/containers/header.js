@@ -10,10 +10,12 @@ import { useHistory } from "react-router-dom";
 
 export function HeaderContainer() {
   const { setAuth } = useContext(AuthContext);
+  const history = useHistory();
 
   const LogoutFn = () => {
+    setAuth({ token: "" });
     localStorage.clear();
-    setAuth("");
+    history.go("/");
   };
   const isLogged = IsLoggedfn();
   // console.log(isLogged);

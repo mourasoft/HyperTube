@@ -13,7 +13,6 @@ import Message from "../notification";
 import { Instance } from "../../helpers/instance";
 
 export default function Signin() {
-  //// TESTING
   const { setAuth } = useContext(AuthContext);
   const [data, setData] = useState({
     username: "",

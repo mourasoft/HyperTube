@@ -30,7 +30,7 @@ const Library = () => {
       }
     }
   };
-
+  console.log("in lib");
   const getData = () => {
     setload(true);
     if (movieCount > movies.length) {

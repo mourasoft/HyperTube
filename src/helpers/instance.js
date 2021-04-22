@@ -1,7 +1,7 @@
 import axios from "axios";
 const config = require("../constants/config");
 
-const { host } = config;
+const { host, img } = config;
 
 export function getInstance(token) {
   return axios.create({
@@ -13,3 +13,5 @@ export function getInstance(token) {
 export const Instance = axios.create({
   baseURL: `${host}`,
 });
+
+export const imgUrl = img;

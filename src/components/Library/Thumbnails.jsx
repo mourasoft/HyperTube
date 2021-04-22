@@ -5,13 +5,26 @@ import Vue from "@material-ui/icons/RemoveRedEye";
 import ActiveWatch from "@material-ui/icons/Bookmark";
 import InactiveWatch from "@material-ui/icons/BookmarkBorder";
 import { useHistory } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { getInstance } from "../../helpers/instance";
+import { AuthContext } from "../../context/context";
 
 const Thumbnails = ({ e }) => {
   const history = useHistory();
   const classes = useStyles();
   const [watch, setWatch] = useState(false);
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
 
+  ///movie/watchlist/:id
+  const addWatch = () => {
+    getInstance(token)
+      .post("/movie/watchlist", { id: e.id })
+      .then((res) => {
+        console.log(res);
+      });
+  };
   return (
     <div className={classes.thumb}>
       <div className={classes.head}>
@@ -38,7 +51,10 @@ const Thumbnails = ({ e }) => {
           <Play className={classes.iconPlay} />
         </i>
       </div>
-      <div onClick={() => setWatch(!watch)} className={classes.addtowatch}>
+      <div
+        onClick={() => (addWatch(), setWatch(!watch))}
+        className={classes.addtowatch}
+      >
         <i>{watch ? <ActiveWatch /> : <InactiveWatch />}</i>
       </div>
       <div className={classes.title}>

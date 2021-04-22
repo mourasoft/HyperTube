@@ -80,6 +80,7 @@ function HeadComent({ classes, handleComment, comment, send }) {
           className={classes.comment}
           variant="outlined"
           onChange={handleComment}
+          value={comment}
           placeholder="Write a comment"
           InputProps={{
             endAdornment: (
@@ -99,7 +100,7 @@ function HeadComent({ classes, handleComment, comment, send }) {
   );
 }
 
-function Comment() {
+function Comment({ classes, el: { username, comment, image, created_at } }) {
   return (
     <div>
       <div
@@ -110,19 +111,33 @@ function Comment() {
         }}
       >
         <div style={{ flexBasis: "5%", marginRight: "15px" }}>
-          <Avatar />
+          <Avatar
+            className={classes.profil}
+            onClick={() => window.open(`/library`)}
+            src={`${imgUrl}${image}`}
+            alt={username}
+          />
         </div>
-        <div style={{ flexBasis: "90%" }}>
-          <div style={{ marginBottom: "8px" }}>Mouras</div>
-          <div>
-            {" "}
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
-            eveniet accusamus ducimus incidunt porro ad aliquam, laudantium
-            velit placeat facilis, impedit debitis sequi. Blanditiis nesciunt
-            esse minima voluptatem. Quo placeat explicabo, adipisci temporibus
-            voluptatibus blanditiis vel voluptate aspernatur quasi, voluptatum
-            fugiat modi velit quas sit, ullam asperiores dicta hic error!
+        <div
+          style={{
+            flexBasis: "90%",
+          }}
+        >
+          <div
+            style={{
+              marginBottom: "8px",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "baseline",
+            }}
+          >
+            <div>{username}</div>
+            <div style={{ fontSize: "10px" }}>
+              {moment(created_at).fromNow()}
+            </div>
           </div>
+          <div>{comment}</div>
         </div>
       </div>
     </div>
@@ -156,5 +171,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     marginBottom: "60px",
     marginTop: "60px",
+  },
+  profil: {
+    cursor: "pointer",
+    "&:hover": {
+      transition: "1s",
+      transform: "scale(1.3)",
+    },
   },
 }));

@@ -52,7 +52,6 @@ export default function Signup() {
       reader.readAsDataURL(file);
     }
   };
-  
   let history = useHistory();
   function submit() {
     Instance.post(`/auth/register`, values).then(
@@ -134,8 +133,8 @@ export default function Signup() {
             placeholder="Confim Password"
             onChange={handleChange}
           />
-          {errors.confirm && errors.confirm && (
-            <Form.Para>{errors.confirm}</Form.Para>
+          {errors.password && errors.password && (
+            <Form.Para>{errors.password}</Form.Para>
           )}
           <Form.Submit type="submit">Sign Up</Form.Submit>
         </Form.Base>

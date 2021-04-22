@@ -18,7 +18,12 @@ try {
   lng = "";
 }
 export function AuthProvider(props) {
-  const [auth, setAuth] = useState({});
+  const [auth, setAuth] = useState({
+    login: "",
+    token: "",
+    image: "",
+    lng: "",
+  });
   // const history = useHistory();
   useEffect(() => {
     if (token) {
@@ -45,7 +50,6 @@ export function AuthProvider(props) {
       setAuth((oldValue) => {
         return { ...oldValue, token: null };
       });
-
       localStorage.clear();
     }
   }, [token]);
@@ -61,6 +65,7 @@ export const IsLoggedfn = () => {
   const {
     auth: { token },
   } = useContext(AuthContext);
+  console.log(token);
   return token;
 };
 
