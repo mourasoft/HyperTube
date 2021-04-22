@@ -133,8 +133,8 @@ export default function Signup() {
             placeholder="Confim Password"
             onChange={handleChange}
           />
-          {errors.password && errors.password && (
-            <Form.Para>{errors.password}</Form.Para>
+          {errors.confirm && errors.confirm && (
+            <Form.Para>{errors.confirm}</Form.Para>
           )}
           <Form.Submit type="submit">Sign Up</Form.Submit>
         </Form.Base>
