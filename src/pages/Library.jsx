@@ -23,7 +23,6 @@ const Library = () => {
   window.onscroll = function () {
     let totalPageHeight = document.body.scrollHeight;
     let scrollPoint = window.scrollY + window.innerHeight;
-    // check if we hit the bottom of the page
     if (scrollPoint >= totalPageHeight) {
       if (!load) {
         getData();
