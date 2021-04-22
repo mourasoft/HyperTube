@@ -3,6 +3,7 @@ const bodyparser = require('body-parser');
 const app = express();
 const config = require('./config/config');
 const routes = require('./routes/routes');
+const cron = require('./config/cron');
 
 const cors = require('cors');
 
@@ -10,7 +11,8 @@ const cors = require('cors');
 app.use(cors());
 
 app.use(bodyparser.json({limit: '5mb'}));
-app.use('/images', express.static('images')); 
+app.use('/images', express.static('images'));
+cron()
 
 app.use((req, res, next) => {
 	console.log('a request made from:', req.hostname);
