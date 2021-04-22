@@ -21,6 +21,10 @@ function App() {
           component={isAuthenticated ? Updatedata : Signin}
         />
         <Route
+          path="/user/:id"
+          component={isAuthenticated ? User : Signin}
+        />
+        <Route
           path="/movie/:id"
           render={(props) => {
             if (isAuthenticated !== undefined) {

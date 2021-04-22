@@ -148,3 +148,16 @@ export const Para = styled.p`
 export const InputImage = styled.input`
   
 `
+export const Label = styled.label`
+
+  
+  border: 0;
+  color: #fff;
+  height: 50px;
+  line-height: 50px;
+  
+  
+  margin-left: 20px;
+ 
+
+`

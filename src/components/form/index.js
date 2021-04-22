@@ -14,6 +14,7 @@ import {
   Box,
   Image,
   Para,
+  Label
 } from "./styles/form";
 
 export default function Form({ children, ...restProps }) {
@@ -74,4 +75,8 @@ Form.Para = function FormRow({ children, ...restProps }) {
 
 Form.InputImage = function FormInputImage({ children, ...restProps }) {
   return <Input type="file" id="img" name="img" accept="image/*"></Input>;
+};
+
+Form.Label = function FormLabel({ children, ...restProps }) {
+  return <Label {...restProps}>{children}</Label>;
 };

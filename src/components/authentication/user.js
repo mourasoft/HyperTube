@@ -5,9 +5,10 @@ import { FooterContainer } from "../../containers/footer";
 import { AuthContext } from "../../context/context";
 import { useHistory, useParams } from 'react-router-dom';
 import { getInstance } from "../../helpers/instance";
+
 export default function User() {
   //// TESTING
-
+  
   const { auth } = useContext(AuthContext);
   const { history } = useHistory();
   const { id } = useParams();
@@ -18,21 +19,27 @@ export default function User() {
     firstname: "",
     lastname: "",
     username: "",
+    language: "",
+    watches: "",
+    favorite: ""
   });
-const [img, setImg] = useState();
 
   useEffect(() => {
     if (auth.token) {
       getInstance(auth.token)
         .get(`/account/${id}`)
         .then((res) => {
-          const { firstname, lastname, username, image } = res.data.data;
+          console.log('res', res);
+          const { firstname, lastname, username, image, language, watches, favorite } = res.data.data;
           setData((old) => ({
             ...old,
             firstname,
             lastname,
             username,
-            image
+            image,
+            language,
+            watches,
+            favorite
           }));
           // console.log(data);
           // localStorage.removeItem('token');
@@ -56,22 +63,31 @@ const [img, setImg] = useState();
       <Form.Box>
           <label htmlFor="exampleFormControlFile1">
             <Form.Image
-              src={!img ? "http://localhost:5000/images/default.svg" : img}
+              src={!data.image ? '' : `http://10.12.7.10:5000${data.image}` }
             />
           </label>
         </Form.Box>
+        <Form.Text>
+          First Name
+        </Form.Text>
         <Form.Input
           name="firstname"
           placeholder="First Name"
           value={data.firstname}
             disabled
         />
+        <Form.Text>
+        Last Name
+        </Form.Text>
         <Form.Input
           name="lastname"
           placeholder="Last Name"
           value={data.lastname}
             disabled
         />
+        <Form.Text>
+        Username
+        </Form.Text>
         <Form.Input
           name="username"
           placeholder="Username"
@@ -80,9 +96,23 @@ const [img, setImg] = useState();
         />
       </Form.Base>
       <Form.Row>
-      <Form.Title>First</Form.Title>
-      <Form.Title>First</Form.Title>
-      <Form.Title>Last</Form.Title>
+      <Form.Title>
+        <Form.Row>
+        Watches
+        </Form.Row>
+        <Form.Row>
+          {data.watches}
+        </Form.Row>
+      </Form.Title>
+      
+      <Form.Title>
+        <Form.Row>
+        Favorite
+        </Form.Row>
+        <Form.Row>
+          {data.favorite}
+        </Form.Row>
+      </Form.Title>
       </Form.Row>
         </Form>
       <FooterContainer />
