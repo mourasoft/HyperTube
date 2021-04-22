@@ -1,10 +1,6 @@
 // import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-<<<<<<< HEAD
 import { Signin, Signup, Forgot, Confirm, Updatedata, Reset, User } from "./pages";
-=======
-import { Signin, Signup, Forgot, Confirm, Updatedata, Reset } from "./pages";
->>>>>>> 6d99e2b669a4831ade8c8b8e76cc99c9f18d9c61
 // import * as ROUTES from "./constants/routes";
 import { AuthProvider, IsLoggedfn } from "./context/context";
 import Library from "./pages/Library";
