@@ -8,3 +8,4 @@ export { default as Changepassword } from "../components/authentication/changepa
 export { default as Updatedata } from "../components/authentication/updatedata";
 export { default as Confirm } from "../components/authentication/confirm";
 export { default as Reset } from "../components/authentication/resetpass";
+export { default as User } from "../components/authentication/user";

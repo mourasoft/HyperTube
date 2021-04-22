@@ -1,4 +1,3 @@
-export { default as Jumbotron } from "./jumbotron";
 export { default as Header } from "../components/header";
 export { default as Form } from "../components/form";
 export { default as Message } from "../components/notification";

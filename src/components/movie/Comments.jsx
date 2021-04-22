@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Avatar, makeStyles, TextField, IconButton } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
-import { getInstance, imgUrl } from "../../helpers/instance";
+import { getInstance } from "../../helpers/instance";
 import { AuthContext } from "../../context/context";
-import moment from "moment";
 
 // movie/comment
 
@@ -14,21 +13,12 @@ import moment from "moment";
 
 export default function Comments({ id }) {
   const authContext = useContext(AuthContext);
-  const { token, login, image } = authContext.auth;
+  const { token } = authContext.auth;
   const [comment, setcomment] = useState("");
-  const [comments, setComments] = useState([]);
   useEffect(() => {
     /*
      *Get all Comments form server
      */
-    getInstance(token)
-      .get(`/movie/comment/${id}`)
-      .then((res) => {
-        // console.log(res.data.comments);
-        const { comments } = res.data;
-        console.log(comments);
-        setComments(comments);
-      });
   }, []);
 
   const handleComment = (e) => {
@@ -37,28 +27,16 @@ export default function Comments({ id }) {
      */
     setcomment(e.target.value);
   };
-  // console.log(comment);
+  console.log(comment);
   const send = () => {
     /*
      *handle the submit to not reload Page
      */
-    let data = comment.trim();
-
-    if (data.length <= 255) {
-      setComments((old) => [
-        {
-          comment: data,
-          created_at: new Date(),
-          username: login,
-          image,
-        },
-        ...old,
-      ]);
-    } else setcomment("");
-    setcomment("");
-    // getInstance(token)
-    //   .post("/movie/comment", { id, comment })
-    //   .then((res) => {});
+    getInstance(token)
+      .post("/movie/comment", { id, comment })
+      .then((res) => {
+        console.log(res);
+      });
   };
   const classes = useStyles();
   return (
@@ -79,15 +57,13 @@ export default function Comments({ id }) {
           comment={comment}
           send={send}
         />
-        {comments?.map((el, i) => {
-          return <Comment classes={classes} key={i} el={el} />;
-        })}
+        <Comment />
       </div>
     </div>
   );
 }
 
-function HeadComent({ classes, handleComment, send, comment }) {
+function HeadComent({ classes, handleComment, comment, send }) {
   return (
     <div
       style={{

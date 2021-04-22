@@ -42,12 +42,16 @@ function Logged({ LogoutFn }) {
     <Header>
       <Header.Frame>
         <Header.Logo to={ROUTES.HOME} src={logo} alt="Hypertube" />
-        <Header.ButtonLink to="/Signup">
+        
+       <div style={{'display': 'flex'}}>
+      
+       <Button to="/library">
           <i>
-            <MovieIcon />
+            <MovieIcon style={{'color': '#dc1b28'}}/>
           </i>
-        </Header.ButtonLink>
-        <Avatar
+        </Button>
+        
+       <Avatar
           onClick={() => {
             history.push("/updatedata");
             console.log("clicked");
@@ -56,9 +60,10 @@ function Logged({ LogoutFn }) {
         />
         <Button onClick={() => LogoutFn()}>
           <i>
-            <LogoutIcon style={{ color: "#dc1b28" }} />
+            <LogoutIcon style={{'color': '#dc1b28'}}/>
           </i>
         </Button>
+       </div>
       </Header.Frame>
     </Header>
   );

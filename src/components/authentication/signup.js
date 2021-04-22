@@ -52,7 +52,6 @@ export default function Signup() {
       reader.readAsDataURL(file);
     }
   };
-
   let history = useHistory();
   function submit() {
     Instance.post(`/auth/register`, values).then(
