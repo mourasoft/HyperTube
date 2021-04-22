@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Avatar, makeStyles, TextField, IconButton } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
-import { getInstance } from "../../helpers/instance";
+import { getInstance, imgUrl } from "../../helpers/instance";
 import { AuthContext } from "../../context/context";
+import { moment } from "moment";
 
 // movie/comment
 
