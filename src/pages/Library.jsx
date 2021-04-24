@@ -1,11 +1,9 @@
 import { Container } from "@material-ui/core";
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useContext } from "react";
 import { Search, Thumbnails } from "../components/index";
-// import  from "../components/Thumbnails";
-import axios from "axios";
-import { HeaderContainer } from "../containers/header";
-import { FooterContainer } from "../containers/footer";
+import { AuthContext } from "../context/context";
+import { useHistory } from "react-router-dom";
+import { getInstance, ApiAllMovie, BackupAllMovie } from "../helpers/instance";
 
 const Library = () => {
   const [num, setNum] = useState({
@@ -19,6 +17,12 @@ const Library = () => {
   const [page, setPage] = useState(2);
   const [movieCount, setMovieCount] = useState(0);
   const [load, setload] = useState(false);
+  const [watched, setWatched] = useState([]);
+  const [view, setView] = useState([]);
+  const history = useHistory();
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
 
   window.onscroll = function () {
     let totalPageHeight = document.body.scrollHeight;
@@ -30,17 +34,12 @@ const Library = () => {
     }
   };
 
-  // useEffect(() => {
-
-  // }, [token]);
-  console.log("in lib");
   const getData = () => {
     setload(true);
     if (movieCount > movies.length) {
-      axios
-        .get(
-          `https://yts.mx/api/v2/list_movies.json?minimum_rating=${num.rating}&sort_by=${num.sorted}&genre=${num.genre}&page=${page}&order_by=${num.order}`
-        )
+      ApiAllMovie.get(
+        `?minimum_rating=${num.rating}&sort_by=${num.sorted}&genre=${num.genre}&page=${page}&order_by=${num.order}`
+      )
         .then((res) => {
           setMovies((old) => [...old, ...res.data.data.movies]);
           setPage(page + 1);
@@ -48,45 +47,55 @@ const Library = () => {
         })
         .catch((er) => {
           if (er) {
-            axios
-              .get(
-                `https://yts.megaproxy.biz/api/v2/list_movies.json?minimum_rating=${num.rating}&sort_by=${num.sorted}&genre=${num.genre}&page=${page}&order_by=${num.order}`
-              )
-              .then((res) => {
-                setMovies((old) => [...old, ...res.data.data.movies]);
-                setPage(page + 1);
-                setload(false);
-              });
+            BackupAllMovie.get(
+              `?minimum_rating=${num.rating}&sort_by=${num.sorted}&genre=${num.genre}&page=${page}&order_by=${num.order}`
+            ).then((res) => {
+              setMovies((old) => [...old, ...res.data.data.movies]);
+              setPage(page + 1);
+              setload(false);
+            });
           }
         });
     }
   };
-  useEffect(() => {
-    axios
-      .get(
-        `https://yts.mx/api/v2/list_movies.json?sort_by=${num.sorted}&order_by=${num.order}`
-      )
-      .then((res) => {
-        setMovieCount(res.data.data.movie_count);
-        setMovies(res.data.data.movies);
-        setload(false);
-      })
-      .catch((error) => {
-        axios
-          .get(
-            `https://yts.megaproxy.biz/api/v2/list_movies.json?sort_by=${num.sorted}`
-          )
-          .then((res) => {
+
+  useEffect(async () => {
+    if (token) {
+      getInstance(token)
+        .get("/movie/watches")
+        .then((res) => {
+          const { watches } = res.data;
+          setView(watches);
+        });
+      getInstance(token)
+        .get(`/movie/watchlist`)
+        .then((res) => {
+          const { watchlist } = res.data;
+          setWatched(watchlist);
+        });
+      getInstance(token)
+        .get(`/movie/watches`)
+        .then((res) => {
+          // console.log(res);
+        });
+      ApiAllMovie.get(`?sort_by=${num.sorted}&order_by=${num.order}`)
+        .then((res) => {
+          setMovieCount(res.data.data.movie_count);
+          setMovies(res.data.data.movies);
+          setload(false);
+        })
+        .catch((error) => {
+          BackupAllMovie.get(`?sort_by=${num.sorted}`).then((res) => {
             setMovieCount(res.data.data.movie_count);
             setMovies(res.data.data.movies);
             setload(false);
           });
-      });
+        });
 
-    return () => {
-      window.onscroll = null;
-      // setload(false);
-    };
+      return () => {
+        window.onscroll = null;
+      };
+    }
     // eslint-disable-next-line
   }, []);
   useEffect(() => {
@@ -99,7 +108,6 @@ const Library = () => {
 
   return (
     <>
-      <HeaderContainer />
       <Container maxWidth="lg">
         <Search
           num={num}
@@ -116,11 +124,10 @@ const Library = () => {
           }}
         >
           {movies?.map((e, i) => {
-            return <Thumbnails key={i} e={e} />;
+            return <Thumbnails key={i} e={e} watched={watched} view={view} />;
           })}
         </div>
       </Container>
-      <FooterContainer />
     </>
   );
 };

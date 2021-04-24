@@ -1,15 +1,14 @@
 import { Container, makeStyles, Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-// import HeadMovie from "../components/HeadMovie";
+import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import ReactPlayer, { setCurrentUrl } from "react-player";
-// import Synopsys from "../components/Synopsys";
-// import Cast from "../components/Cast";
+import ReactPlayer from "react-player";
 import { Comments, Cast, Synopsys, HeadMovie } from "../components/index";
 import { HeaderContainer } from "../containers/header";
 import { FooterContainer } from "../containers/footer";
+import { host } from "../constants/config";
+import { AuthContext } from "../context/context";
 
 const Movie = () => {
   const classes = useStyles();
@@ -19,11 +18,17 @@ const Movie = () => {
   const [sug, setSug] = useState();
   const history = useHistory();
   const [url, setUrl] = useState("");
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
+  const creatUrl = (el) => {
+    console.log(el);
+    const { id, imdb_code } = movie;
+    let url = `${host}/stream/${token}/${id}/${imdb_code}/${el.hash}`;
+    console.log("id", url);
+    setUrl(url);
+  };
 
-  // const [url, setUrl] = useState("");
-
-  // console.log(movie);
-  // console.log(url);
   const handleQuality = async (torrents) => {
     // console.log(torrents);
     const HD = await torrents.find((el) => {
@@ -50,7 +55,7 @@ const Movie = () => {
        * redirect to Library
        */
 
-      history.replace("/library");
+      history.replace("/");
     } else {
       /*
        * Get Data
@@ -65,6 +70,7 @@ const Movie = () => {
             // console.log(data.data);
             if (data && data.data.movie.imdb_code !== "tt") {
               const { movie } = data.data;
+              await setMovie(movie);
               axios
                 .get(
                   `https://yts.mx/api/v2/movie_suggestions.json?movie_id=${id}`
@@ -74,31 +80,26 @@ const Movie = () => {
                   const { movies } = res.data.data;
                   setSug(movies);
                 });
-              await setMovie(movie);
               await handleQuality(movie.torrents);
             } else {
               /*
                * redirect to Library
                */
 
-              history.replace("/library");
+              history.replace("/");
             }
           });
       } catch (e) {}
     }
+    return () => {
+      setUrl("");
+    };
   }, [id]);
   const filterd = quality.filter((el) => el);
-  // useEffect(() => {
-  //   console.log("filtred", filterd);
-  //   if (filterd) {
-  //     console.log("useffct dyal filter");
-  //   }
-  //   // url ={http://10.12.7.10:5000/api/v1/movie/stream/imdcode/${url}}
-  // }, [filterd]);
-  // console.log(filterd);
+
   useEffect(() => {
     if (movie) {
-      console.log(movie);
+      // console.log(movie);
       document.title = `${movie?.title_long}`;
     }
   }, [movie]);
@@ -117,16 +118,7 @@ const Movie = () => {
               controls
               width="100%"
               height="auto"
-              // onStart={() => {
-              //   setCurrentUrl(
-              //     `http://10.12.7.10:5000/api/v1/movie/stream/${
-              //       movie && movie?.imdb_code
-              //     }/${filterd[0] && filterd[0]?.hash}`
-              //   );
-              // }}
-              // url={`http://10.12.7.10:5000/api/v1/movie/stream/${
-              //   movie && movie?.imdb_code
-              // }/${filterd[0] && filterd[0]?.hash}`}
+              url={url}
               light={movie?.large_cover_image}
               onError={(e) => {
                 console.log(e);
@@ -166,6 +158,7 @@ const Movie = () => {
             {filterd.map((el, i) => (
               // <span key={i}>{el.quality}</span>
               <Button
+                onClick={() => creatUrl(el)}
                 style={{ margin: "5px" }}
                 key={i}
                 color="secondary"

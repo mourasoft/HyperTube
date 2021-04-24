@@ -16,11 +16,11 @@ export function HeaderContainer() {
     setAuth("");
     localStorage.clear();
     history.go("/");
+
+    const channel = new BroadcastChannel("logout");
+    channel.postMessage("log out now");
   };
   const isLogged = IsLoggedfn();
-  // console.log(isLogged);
-  // console.log(authContext);
-  // const isLogegd;
   if (isLogged) return <Logged LogoutFn={LogoutFn} />;
   else return <NotLogged />;
 }
@@ -44,7 +44,7 @@ function Logged({ LogoutFn }) {
         <Header.Logo to={ROUTES.HOME} src={logo} alt="Hypertube" />
 
         <div style={{ display: "flex" }}>
-          <Button to="/library">
+          <Button onClick={() => history.push("/watchlist")}>
             <i>
               <MovieIcon style={{ color: "#dc1b28" }} />
             </i>

@@ -7,12 +7,10 @@ let token;
 let image;
 let lng;
 try {
-  login = localStorage?.getItem("username");
   token = localStorage?.getItem("token");
   image = localStorage?.getItem("image");
   lng = localStorage?.getItem("lng");
 } catch (error) {
-  login = "";
   token = "";
   image = "";
   lng = "";
@@ -24,19 +22,23 @@ export function AuthProvider(props) {
     image: "",
     lng: "",
   });
+  // console.log(auth);
   // const history = useHistory();
   useEffect(() => {
+    // console.log("context in ");
     if (token) {
       const isValid = () => {
         getInstance(token)
           .get("/account/me")
           .then((res) => {
-            if (res.status === 200) {
-              setAuth((oldValue) => ({
-                ...oldValue,
-                token,
-              }));
-            }
+            // console.log(res.data.user);
+            const { image, language } = res.data.user;
+            setAuth((oldValue) => ({
+              ...oldValue,
+              token,
+              image,
+              lng: language,
+            }));
           })
           .catch((e) => {
             localStorage.clear();
@@ -48,11 +50,11 @@ export function AuthProvider(props) {
       isValid();
     } else {
       setAuth((oldValue) => {
-        return { ...oldValue, token: null };
+        return { ...oldValue, token: "" };
       });
       localStorage.clear();
     }
-  }, [token]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
