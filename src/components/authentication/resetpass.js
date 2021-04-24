@@ -52,7 +52,7 @@ export default function Reset() {
 
   return (
     <>
-      <HeaderContainer>
+      {/* <HeaderContainer /> */}
         <Form>
           <Form.Title>Reset Password</Form.Title>
           <Form.Base onSubmit={handleSubmit} method="POST">
@@ -83,7 +83,7 @@ export default function Reset() {
             </Form.Submit>
           </Form.Base>
         </Form>
-      </HeaderContainer>
+      
       <FooterContainer />
     </>
   );

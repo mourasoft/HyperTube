@@ -12,6 +12,7 @@ export const Container = styled.div`
   max-width: 450px;
   padding: 60px 68px 40px;
   margin-bottom: 100px;
+  
 `;
 
 export const Box = styled.div`
@@ -25,10 +26,7 @@ export const Box = styled.div`
   padding: 60px 68px 40px;
   // margin-bottom: 100px;
 
-  @media(max-width: 1000px){
-    //max-width: 200px;
-    width: 100%;
-  }
+  
 `
 
 export const Image = styled.img`
@@ -38,6 +36,11 @@ export const Image = styled.img`
   height: 200px;
   width: 200px;
   // border-radius: 50%;
+
+  @media(max-width: 1000px){
+    margin: auto;
+    width: 100%;
+    height: 100%;
   
 `
 

@@ -12,7 +12,7 @@ export default function Updatedata() {
 
   return (
     <>
-      <HeaderContainer/>
+      {/* <HeaderContainer/> */}
         <Form>
           {toggle ? <Update /> : <Changepassword />}
           <Form.Row>

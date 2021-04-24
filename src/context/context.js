@@ -6,17 +6,8 @@ let login;
 let token;
 let image;
 let lng;
-try {
-  login = localStorage?.getItem("username");
-  token = localStorage?.getItem("token");
-  image = localStorage?.getItem("image");
-  lng = localStorage?.getItem("lng");
-} catch (error) {
-  login = "";
-  token = "";
-  image = "";
-  lng = "";
-}
+
+
 export function AuthProvider(props) {
   const [auth, setAuth] = useState({
     login: "",
@@ -24,6 +15,21 @@ export function AuthProvider(props) {
     image: "",
     lng: "",
   });
+
+    try {
+      login = localStorage?.getItem("username");
+      token = localStorage?.getItem("token");
+      image = localStorage?.getItem("image");
+      lng = localStorage?.getItem("lng");
+    } catch (error) {
+      login = "";
+      token = "";
+      image = "";
+      lng = "";
+    }
+
+ 
+
   // const history = useHistory();
   useEffect(() => {
     if (token) {

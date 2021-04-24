@@ -10,7 +10,7 @@ import { getInstance } from "../../helpers/instance";
 function Update() {
   const [img, setImg] = useState();
   const { auth } = useContext(AuthContext);
-  const { history } = useHistory();
+  let  history  = useHistory();
   const [data, setData] = useState({
     image: "",
     firstname: "",
@@ -43,7 +43,13 @@ function Update() {
     const file = e.target.files[0];
     if (file.size !== 0) {
       reader.onload = () => {
-        setImg(reader.result);
+        // setImg(reader.result);
+        setData((old) => ({
+          ...old,
+          image: reader.result
+          }
+        ))
+        
       };
       reader.readAsDataURL(file);
     }
@@ -63,26 +69,27 @@ function Update() {
             email,
             image,
           }));
-          // console.log(data);
           // localStorage.removeItem('token');
           // localStorage.removeItem('username');
           // localStorage.removeItem('lng');
           // localStorage.removeItem('image');
           // authContext.setAuth({});
-          history.push("/signin");
+          // history.push("/signin");
         })
         .catch((e) => {});
     }
     // eslint-disable-next-line
-  }, []);
+  }, [auth.token]);
   function submit() {
     if (auth.token) {
       getInstance(auth.token)
         .post(`/account/update/info`, values)
         .then(
           (res) => {
+            console.log('values : ', values);
             if (res.data.status === 200) {
               Message("success", res.data.message);
+              // history.push("/library");
             }
           },
           (error) => {
@@ -91,6 +98,7 @@ function Update() {
         );
     }
   }
+  console.log('this is image', data);
   return (
     <>
       <Form.Title>Update information</Form.Title>
@@ -98,7 +106,7 @@ function Update() {
         <Form.Box>
           <label htmlFor="exampleFormControlFile1">
             <Form.Image
-              src={!img ? "http://localhost:5000/images/default.svg" : img}
+              src={data.image }
             />
           </label>
           <input
@@ -110,7 +118,6 @@ function Update() {
             accept="image/*"
           />
         </Form.Box>
-
         <Form.Input
           name="firstname"
           placeholder="First Name"
@@ -157,7 +164,16 @@ function Update() {
         {errors.password && errors.password && (
           <Form.Para>{errors.password}</Form.Para>
         )}
-        <Form.Submit type="submit" data-testid="sign-in">
+      
+        <div style={{'display': 'flex', 'flex-direction': 'row', 'justifyContent': 'space-around'}}>
+            <input type="radio" id="Choice1"
+            name="langue" value="EN"/>
+            <label htmlfor="Choice1">EN</label>
+            <input type="radio" id="Choice2"
+            name="langue" value="FR" />
+            <label htmlfor="Choice1">FR</label>
+          </div>
+        <Form.Submit type="submit">
           UPDATE
         </Form.Submit>
       </Form.Base>

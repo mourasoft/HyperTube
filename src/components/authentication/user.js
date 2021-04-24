@@ -52,10 +52,10 @@ export default function User() {
         .catch((e) => {});
     }
     // eslint-disable-next-line
-  }, [id]);
+  }, [id, auth.token]);
   return (
     <>
-      <HeaderContainer/>
+      {/* <HeaderContainer/> */}
         <Form>
         <Form.Title>Update information</Form.Title>
       <Form.Base method="POST">

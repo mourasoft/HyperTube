@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Form } from "../index";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import useForm from "../../helpers/usefom";
 import ValidPassword from "../../helpers/validatePassword";
 import { AuthContext } from "../../context/context";
@@ -49,11 +49,7 @@ export default function Changepassword() {
         );
     }
   }
-
-  var location = useLocation();
   var history = useHistory();
-  console.log("----", location);
-  console.log("----", history.location);
   return (
     <>
       <Form.Title>Change Password</Form.Title>

@@ -14,12 +14,14 @@ import { AuthProvider, IsLoggedfn } from "./context/context";
 import Library from "./pages/Library";
 import Movie from "./pages/movie";
 import { useEffect } from "react";
+import { HeaderContainer } from "./containers/header";
 
 function App() {
   const isAuthenticated = IsLoggedfn();
-
+  console.log("logged", isAuthenticated);
   return (
     <Router>
+      <HeaderContainer />
       <Switch>
         <Route exact path="/confirm/:token" component={Confirm} />
         <Route exact path="/reset/:token" component={Reset} />
@@ -29,7 +31,12 @@ function App() {
         />
         <Route
           path="/user/:id"
-          component={isAuthenticated ? User : Signin}
+          render={(props) => {
+            if (isAuthenticated !== undefined) {
+              if (typeof isAuthenticated === "string") return <User />;
+              else return <Signin />;
+            }
+          }}
         />
         <Route
           path="/movie/:id"

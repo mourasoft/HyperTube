@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Header } from "../components";
 import * as ROUTES from "../constants/routes";
 import logo from "../hypertube.png";
@@ -11,9 +11,18 @@ import { useHistory } from "react-router-dom";
 export function HeaderContainer() {
   const { setAuth } = useContext(AuthContext);
   const history = useHistory();
+  
+console.log('callllllled')
+  // try {
+  //   let t = localStorage.getItem('token');
+  //   if (!t || t == undefined)
+  //     history.push('/signin');
+  // } catch (error) {
+  //     history.push('/signin');
+  // }
 
   const LogoutFn = () => {
-    setAuth("");
+    setAuth({token:"lll"});
     localStorage.clear();
     history.go("/");
   };

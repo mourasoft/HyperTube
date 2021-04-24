@@ -73,10 +73,25 @@ export default function Signup() {
 
   return (
     <>
-      <HeaderContainer />
+      {/* <HeaderContainer /> */}
       <Form>
         <Form.Title>Sign Up</Form.Title>
         <Form.Base onSubmit={handleSubmit} method="POST">
+        <Form.Box>
+          <label htmlFor="exampleFormControlFile1">
+            <Form.Image
+              src=""
+            />
+          </label>
+          <input
+            type="file"
+            hidden
+            onChange={photoUpload}
+            className="form-control-file"
+            id="exampleFormControlFile1"
+            accept="image/*"
+          />
+        </Form.Box>
           <Form.Input
             name="firstname"
             placeholder="First Name"

@@ -40,7 +40,7 @@ export default function Forgot() {
 
   return (
     <>
-      <HeaderContainer />
+      {/* <HeaderContainer /> */}
         <Form>
           <Form.Title>Reset</Form.Title>
           <Form.Base onSubmit={handleSubmit} method="POST">

@@ -1,6 +1,6 @@
 import { Container, makeStyles, Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 // import HeadMovie from "../components/HeadMovie";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
@@ -10,6 +10,10 @@ import ReactPlayer, { setCurrentUrl } from "react-player";
 import { Comments, Cast, Synopsys, HeadMovie } from "../components/index";
 import { HeaderContainer } from "../containers/header";
 import { FooterContainer } from "../containers/footer";
+import { AuthContext } from "../context/context";
+
+
+
 
 const Movie = () => {
   const classes = useStyles();
@@ -19,7 +23,21 @@ const Movie = () => {
   const [sug, setSug] = useState();
   const history = useHistory();
   const [url, setUrl] = useState("");
+const authContext = useContext(AuthContext)
 
+const {token} = authContext.auth
+
+  // useEffect(() => {
+  //   console.log('check token is called');
+  //   try {
+  //     let t = localStorage.getItem('token');
+  //     if (!t || t == undefined)
+  //       history.go('/signin');
+  //   } catch (error) {
+  //       history.go('/signin');
+  //   }
+
+  // }, [])
   // const [url, setUrl] = useState("");
 
   // console.log(movie);
@@ -104,7 +122,7 @@ const Movie = () => {
   }, [movie]);
   return (
     <>
-      <HeaderContainer />
+      {/* <HeaderContainer /> */}
       <Container maxWidth="lg">
         <div className={classes.paper}>
           <HeadMovie movie={movie} />
