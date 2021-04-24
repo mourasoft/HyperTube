@@ -3,11 +3,9 @@ import { useEffect, useContext, useState } from "react";
 import { AuthContext } from "../context/context";
 import { getInstance } from "../helpers/instance";
 import axios from "axios";
-import Thumbnails from "../components/Library/Thumbnails";
 import WatchMovie from "../components/watchlist/WatchMovie";
 
 export default function Watchlist() {
-  const [watchMovie, setWatchMovie] = useState({});
   const [view, setView] = useState([]);
   const {
     auth: { token },
@@ -38,21 +36,12 @@ export default function Watchlist() {
         .get(`/movie/watchlist`)
         .then((res) => {
           const { watchlist } = res.data;
-          console.log(watchlist);
+
           watchlist?.map((el) => {
             return getmovie(el.movie_id);
           });
         });
     }
-    /*
-     *
-     * Fetch list of viewd movie for this user
-     */
-    // axios.get(`https://yts.mx/api/v2/list_movies.json`).then((res) => {
-    //   const { movies } = res.data.data;
-    //   // console.log(movies);
-    //   setMovies(movies);
-    // });
   }, [token]);
 
   return (

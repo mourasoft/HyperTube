@@ -15,7 +15,7 @@ function Update() {
     username: "",
     email: "",
     password: "",
-    language: ""
+    language: "",
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -42,18 +42,17 @@ function Update() {
     if (file && file.size !== 0) {
       reader.onload = () => {
         getInstance(auth.token)
-        .post("/account/upload", {image: reader.result}).then(res => {
-          Message('success', res.data.message);
-          // localStorage.setItem("image", res.data.data.image);
-          setData((old) => 
-         ({...old,
-         image: res.data.image})
-       )
-        }).catch(e => {
-          if(e.response){
-            Message('error', e.response.data.message)
-          }
-        })  
+          .post("/account/upload", { image: reader.result })
+          .then((res) => {
+            Message("success", res.data.message);
+            // localStorage.setItem("image", res.data.data.image);
+            setData((old) => ({ ...old, image: res.data.image }));
+          })
+          .catch((e) => {
+            if (e.response) {
+              Message("error", e.response.data.message);
+            }
+          });
       };
       reader.readAsDataURL(file);
     }
@@ -65,7 +64,14 @@ function Update() {
         .get("/account/me")
         .then((res) => {
           // console.log("all data", res.data);
-          const { firstname, lastname, username, email, image, language } = res.data.user;
+          const {
+            firstname,
+            lastname,
+            username,
+            email,
+            image,
+            language,
+          } = res.data.user;
           setData((old) => ({
             ...old,
             firstname,
@@ -92,7 +98,7 @@ function Update() {
         .post(`/account/update/info`, values)
         .then(
           (res) => {
-            console.log('values : ', values);
+            console.log("values : ", values);
             if (res.data.status === 200) {
               Message("success", res.data.message);
               // history.push("/library");
@@ -104,17 +110,16 @@ function Update() {
         );
     }
   }
-  console.log('language', data.language);
-  
+  console.log("language", data.language);
+
   return (
     <>
-    
       <Form.Title>Update information</Form.Title>
       <Form.Base onSubmit={handleSubmit} method="POST">
         <Form.Box>
           <label htmlFor="exampleFormControlFile1">
             <Form.Image
-              src={`http://10.12.7.10:5000${data.image}`}
+              src={data.image && `http://10.12.7.10:5000${data.image}`}
             />
           </label>
           <input
@@ -172,25 +177,38 @@ function Update() {
         {errors.password && errors.password && (
           <Form.Para>{errors.password}</Form.Para>
         )}
-      
-        <div style={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-around'}}>
-          
-            <input type="radio" id="Choice1"
-            name="language" value="EN" onChange={e => setData((old) => 
-              ({...old,
-                language: e.target.value})
-            )} checked={data.language === 'EN' ? true : false}/>
-            <label htmlFor="Choice1">EN</label>
-            <input type="radio" id="Choice2"
-            name="language" value="FR" onChange={e => setData((old) => 
-              ({...old,
-                language: e.target.value})
-            )} checked={data.language === 'FR' ? true : false} />
-            <label htmlFor="Choice1">FR</label>
-          </div>
-        <Form.Submit type="submit">
-          UPDATE
-        </Form.Submit>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}
+        >
+          <input
+            type="radio"
+            id="Choice1"
+            name="language"
+            value="EN"
+            onChange={(e) =>
+              setData((old) => ({ ...old, language: e.target.value }))
+            }
+            checked={data.language === "EN" ? true : false}
+          />
+          <label htmlFor="Choice1">EN</label>
+          <input
+            type="radio"
+            id="Choice2"
+            name="language"
+            value="FR"
+            onChange={(e) =>
+              setData((old) => ({ ...old, language: e.target.value }))
+            }
+            checked={data.language === "FR" ? true : false}
+          />
+          <label htmlFor="Choice1">FR</label>
+        </div>
+        <Form.Submit type="submit">UPDATE</Form.Submit>
       </Form.Base>
     </>
   );

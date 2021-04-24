@@ -2,7 +2,7 @@ import { Container } from "@material-ui/core";
 import { useState, useEffect, useContext } from "react";
 import { Search, Thumbnails } from "../components/index";
 import { AuthContext } from "../context/context";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import { getInstance, ApiAllMovie, BackupAllMovie } from "../helpers/instance";
 
 const Library = () => {
@@ -19,7 +19,7 @@ const Library = () => {
   const [load, setload] = useState(false);
   const [watched, setWatched] = useState([]);
   const [view, setView] = useState([]);
-  const history = useHistory();
+  // const history = useHistory();
   const {
     auth: { token },
   } = useContext(AuthContext);
@@ -59,7 +59,7 @@ const Library = () => {
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (token) {
       getInstance(token)
         .get("/movie/watches")

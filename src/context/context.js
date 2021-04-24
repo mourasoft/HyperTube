@@ -13,7 +13,7 @@ try {
   language = localStorage?.getItem("language");
 } catch (error) {
   // username = "",
-  // token = "";
+  token = "";
   // image = "";
   // language = "";
 }
@@ -24,22 +24,21 @@ export function AuthProvider(props) {
     image: "",
     language: "",
   });
-  
+
   useEffect(() => {
-    
     if (token) {
       const isValid = () => {
         getInstance(token)
           .get("/account/me")
           .then((res) => {
-            console.log('context', res.data.user);
+            console.log("context", res.data.user);
             const { image, language } = res.data.user;
             setAuth((oldValue) => ({
               ...oldValue,
               token,
               image,
               language,
-              username
+              username,
             }));
           })
           .catch((e) => {
