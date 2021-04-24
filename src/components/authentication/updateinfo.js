@@ -2,15 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { Form } from "../index";
 import Message from "../notification";
 import { AuthContext } from "../../context/context";
-import { useHistory } from "react-router-dom";
 import useForm from "../../helpers/usefom";
 import validateUpdateinfo from "../../helpers/validateUpdateinfo";
 import { getInstance } from "../../helpers/instance";
 
 function Update() {
-  const [img, setImg] = useState();
   const { auth } = useContext(AuthContext);
-  let  history  = useHistory();
   const [data, setData] = useState({
     image: "",
     firstname: "",
@@ -18,6 +15,7 @@ function Update() {
     username: "",
     email: "",
     password: "",
+    language: ""
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -41,15 +39,21 @@ function Update() {
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
-    if (file.size !== 0) {
+    if (file && file.size !== 0) {
       reader.onload = () => {
-        // setImg(reader.result);
-        setData((old) => ({
-          ...old,
-          image: reader.result
+        getInstance(auth.token)
+        .post("/account/upload", {image: reader.result}).then(res => {
+          Message('success', res.data.message);
+          // localStorage.setItem("image", res.data.data.image);
+          setData((old) => 
+         ({...old,
+         image: res.data.image})
+       )
+        }).catch(e => {
+          if(e.response){
+            Message('error', e.response.data.message)
           }
-        ))
-        
+        })  
       };
       reader.readAsDataURL(file);
     }
@@ -60,7 +64,8 @@ function Update() {
       getInstance(auth.token)
         .get("/account/me")
         .then((res) => {
-          const { firstname, lastname, username, email, image } = res.data.user;
+          // console.log("all data", res.data);
+          const { firstname, lastname, username, email, image, language } = res.data.user;
           setData((old) => ({
             ...old,
             firstname,
@@ -68,6 +73,7 @@ function Update() {
             username,
             email,
             image,
+            language,
           }));
           // localStorage.removeItem('token');
           // localStorage.removeItem('username');
@@ -79,7 +85,7 @@ function Update() {
         .catch((e) => {});
     }
     // eslint-disable-next-line
-  }, [auth.token]);
+  }, [auth.token, data.image]);
   function submit() {
     if (auth.token) {
       getInstance(auth.token)
@@ -98,15 +104,17 @@ function Update() {
         );
     }
   }
-  console.log('this is image', data);
+  console.log('language', data.language);
+  
   return (
     <>
+    
       <Form.Title>Update information</Form.Title>
       <Form.Base onSubmit={handleSubmit} method="POST">
         <Form.Box>
           <label htmlFor="exampleFormControlFile1">
             <Form.Image
-              src={data.image }
+              src={`http://10.12.7.10:5000${data.image}`}
             />
           </label>
           <input
@@ -165,13 +173,20 @@ function Update() {
           <Form.Para>{errors.password}</Form.Para>
         )}
       
-        <div style={{'display': 'flex', 'flex-direction': 'row', 'justifyContent': 'space-around'}}>
+        <div style={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-around'}}>
+          
             <input type="radio" id="Choice1"
-            name="langue" value="EN"/>
-            <label htmlfor="Choice1">EN</label>
+            name="language" value="EN" onChange={e => setData((old) => 
+              ({...old,
+                language: e.target.value})
+            )} checked={data.language === 'EN' ? true : false}/>
+            <label htmlFor="Choice1">EN</label>
             <input type="radio" id="Choice2"
-            name="langue" value="FR" />
-            <label htmlfor="Choice1">FR</label>
+            name="language" value="FR" onChange={e => setData((old) => 
+              ({...old,
+                language: e.target.value})
+            )} checked={data.language === 'FR' ? true : false} />
+            <label htmlFor="Choice1">FR</label>
           </div>
         <Form.Submit type="submit">
           UPDATE

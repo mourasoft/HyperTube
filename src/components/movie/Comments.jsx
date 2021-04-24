@@ -14,39 +14,33 @@ import moment from "moment";
 
 export default function Comments({ id }) {
   const authContext = useContext(AuthContext);
-  const { token, login, image } = authContext.auth;
+  const { token, image } = authContext.auth;
   const [comment, setcomment] = useState("");
   const [comments, setComments] = useState([]);
   useEffect(() => {
-    /*
-     *Get all Comments form server
-     */
     if (!token) return;
     getInstance(token)
       .get(`/movie/comment/${id}`)
       .then((res) => {
-        // console.log("success comments", res);
         const { comments } = res.data;
         setComments(comments);
       })
       .catch((e) => {
-        console.log("error comments", e.response);
+        // console.log(e);
+        setComments([]);
       });
-  }, [token]);
+    // return () => {
+    //   // console.log("wasi unmount");
+    //   return setComments("");
+    // };
+  }, [token, id]);
 
   const handleComment = (e) => {
-    /*
-     *post new message
-     */
     setcomment(e.target.value);
   };
-  // console.log(comment);
-  const send = () => {
-    /*
-     *handle the submit to not reload Page
-     */
-    let data = comment.trim();
 
+  const send = () => {
+    let data = comment.trim();
     if (data.length <= 255) {
       getInstance(token)
         .post("/movie/comment", { id, comment })
@@ -61,13 +55,9 @@ export default function Comments({ id }) {
             },
             ...old,
           ]);
-          console.log(res);
         });
     } else setcomment("");
     setcomment("");
-    // getInstance(token)
-    //   .post("/movie/comment", { id, comment })
-    //   .then((res) => {});
   };
   const classes = useStyles();
   return (
@@ -87,6 +77,7 @@ export default function Comments({ id }) {
           handleComment={handleComment}
           comment={comment}
           send={send}
+          image={image}
         />
         {comments?.map((el, i) => {
           return <Comment classes={classes} key={i} el={el} />;
@@ -96,7 +87,7 @@ export default function Comments({ id }) {
   );
 }
 
-function HeadComent({ classes, handleComment, send, comment }) {
+function HeadComent({ classes, handleComment, send, comment, image }) {
   return (
     <div
       style={{
@@ -105,8 +96,8 @@ function HeadComent({ classes, handleComment, send, comment }) {
         alignItems: "center",
       }}
     >
-      <div style={{ flexBasis: "5%", marginRight: "15px" }}>
-        <Avatar />
+      <div className={classes.userAvatar}>
+        <Avatar src={`${imgUrl}${image}`} />
       </div>
       <div style={{ flexBasis: "90%" }}>
         <TextField
@@ -136,13 +127,7 @@ function HeadComent({ classes, handleComment, send, comment }) {
 function Comment({ classes, el: { username, comment, image, created_at } }) {
   return (
     <div>
-      <div
-        style={{
-          padding: "10px",
-          display: "flex",
-          alignItems: "flex-start",
-        }}
-      >
+      <div className={classes.commentPaper}>
         <div style={{ flexBasis: "5%", marginRight: "15px" }}>
           <Avatar
             className={classes.profil}
@@ -168,6 +153,7 @@ function Comment({ classes, el: { username, comment, image, created_at } }) {
     </div>
   );
 }
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     color: "#E4E6EB",
@@ -211,4 +197,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "baseline",
   },
+  userAvatar: {
+    flexBasis: "5%",
+    marginRight: "15px",
+  },
+  // commentPaper: { padding: "10px", display: "flex", alignItems: "flex-start" },
 }));

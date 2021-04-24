@@ -1,7 +1,5 @@
-import React, { useContext, useState } from "react";
-import { HeaderContainer } from "../../containers/header";
+import React, { useContext, useState, useEffect } from "react";
 import { Form } from "../index";
-import { FooterContainer } from "../../containers/footer";
 import { FcGoogle } from "react-icons/fc";
 import { FiGithub } from "react-icons/fi";
 import { GrFacebook } from "react-icons/gr";
@@ -35,11 +33,11 @@ export default function Signin() {
   function submit() {
     Instance.post("/auth/login", data).then(
       (res) => {
-        console.log(res.data);
+        // console.log(res.data);
         if (res.data.status === 200) {
           try {
             localStorage.setItem("token", res.data.token);
-            localStorage.setItem("lng", res.data.data.language);
+            localStorage.setItem("language", res.data.data.language);
             localStorage.setItem("image", res.data.data.image);
             localStorage.setItem("username", res.data.data.username);
           } catch (error) {
@@ -62,7 +60,9 @@ export default function Signin() {
       }
     );
   }
-
+  useEffect(() => {
+    document.title = "HyperTube | Signin ";
+  });
   return (
     <>
       {/* <HeaderContainer /> */}
@@ -101,6 +101,9 @@ export default function Signin() {
           Forgot password? <Form.Link to="/forgot">Forgot.</Form.Link>
         </Form.Text>
         <Form.Omniauth type="submit">
+          <Gr42school />
+        </Form.Omniauth>
+        <Form.Omniauth type="submit">
           <GrFacebook />
         </Form.Omniauth>
         <Form.Omniauth type="submit">
@@ -110,8 +113,14 @@ export default function Signin() {
           <FiGithub />
         </Form.Omniauth>
       </Form>
-
-      <FooterContainer />
     </>
   );
+}
+
+function Gr42school(){
+  return (
+    <>
+    <img style={{"width": "1em", "height": "1em"}} src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/512px-42_Logo.svg.png" alt="42"/>
+    </>
+  )
 }

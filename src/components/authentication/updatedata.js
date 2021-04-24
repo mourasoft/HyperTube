@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { HeaderContainer } from "../../containers/header";
 import { Form } from "../index";
-import { FooterContainer } from "../../containers/footer";
 import Changepassword from "./changepassword";
 import Update from "./updateinfo";
 
@@ -12,7 +10,6 @@ export default function Updatedata() {
 
   return (
     <>
-      {/* <HeaderContainer/> */}
         <Form>
           {toggle ? <Update /> : <Changepassword />}
           <Form.Row>
@@ -24,7 +21,6 @@ export default function Updatedata() {
             </Form.Submit>
           </Form.Row>
         </Form>
-      <FooterContainer />
     </>
   );
 }

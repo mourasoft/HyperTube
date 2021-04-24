@@ -2,47 +2,45 @@ import React, { useState, createContext, useEffect, useContext } from "react";
 import { getInstance } from "../helpers/instance";
 
 export const AuthContext = createContext();
-let login;
+let username;
 let token;
 let image;
-let lng;
-
-
+let language;
+try {
+  username = localStorage?.getItem("username");
+  token = localStorage?.getItem("token");
+  image = localStorage?.getItem("image");
+  language = localStorage?.getItem("language");
+} catch (error) {
+  // username = "",
+  // token = "";
+  // image = "";
+  // language = "";
+}
 export function AuthProvider(props) {
   const [auth, setAuth] = useState({
-    login: "",
+    username: "",
     token: "",
     image: "",
-    lng: "",
+    language: "",
   });
-
-    try {
-      login = localStorage?.getItem("username");
-      token = localStorage?.getItem("token");
-      image = localStorage?.getItem("image");
-      lng = localStorage?.getItem("lng");
-    } catch (error) {
-      login = "";
-      token = "";
-      image = "";
-      lng = "";
-    }
-
- 
-
-  // const history = useHistory();
+  
   useEffect(() => {
+    
     if (token) {
       const isValid = () => {
         getInstance(token)
           .get("/account/me")
           .then((res) => {
-            if (res.status === 200) {
-              setAuth((oldValue) => ({
-                ...oldValue,
-                token,
-              }));
-            }
+            console.log('context', res.data.user);
+            const { image, language } = res.data.user;
+            setAuth((oldValue) => ({
+              ...oldValue,
+              token,
+              image,
+              language,
+              username
+            }));
           })
           .catch((e) => {
             localStorage.clear();
@@ -54,11 +52,11 @@ export function AuthProvider(props) {
       isValid();
     } else {
       setAuth((oldValue) => {
-        return { ...oldValue, token: null };
+        return { ...oldValue, token: "" };
       });
       localStorage.clear();
     }
-  }, [token]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>

@@ -1,7 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { HeaderContainer } from "../../containers/header";
 import { Form } from "../index";
-import { FooterContainer } from "../../containers/footer";
 import { AuthContext } from "../../context/context";
 import { useHistory, useParams } from 'react-router-dom';
 import { getInstance } from "../../helpers/instance";
@@ -10,9 +8,7 @@ export default function User() {
   //// TESTING
   
   const { auth } = useContext(AuthContext);
-  const { history } = useHistory();
   const { id } = useParams();
-  console.log('id : ', id)
   
   const [data, setData] = useState({
     image: "",
@@ -44,22 +40,22 @@ export default function User() {
           // console.log(data);
           // localStorage.removeItem('token');
           // localStorage.removeItem('username');
-          // localStorage.removeItem('lng');
+          // localStorage.removeItem('language');
           // localStorage.removeItem('image');
           // authContext.setAuth({});
           
         })
-        .catch((e) => {});
+        .catch((e) => {
+          console.log('errrrrror')
+        });
     }
     // eslint-disable-next-line
   }, [id, auth.token]);
   return (
     <>
-      {/* <HeaderContainer/> */}
         <Form>
-        <Form.Title>Update information</Form.Title>
+  <Form.Title>Information about {data.username}</Form.Title>
       <Form.Base method="POST">
-
       <Form.Box>
           <label htmlFor="exampleFormControlFile1">
             <Form.Image
@@ -115,7 +111,6 @@ export default function User() {
       </Form.Title>
       </Form.Row>
         </Form>
-      <FooterContainer />
     </>
   );
 }

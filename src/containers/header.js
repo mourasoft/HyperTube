@@ -11,25 +11,16 @@ import { useHistory } from "react-router-dom";
 export function HeaderContainer() {
   const { setAuth } = useContext(AuthContext);
   const history = useHistory();
-  
-console.log('callllllled')
-  // try {
-  //   let t = localStorage.getItem('token');
-  //   if (!t || t == undefined)
-  //     history.push('/signin');
-  // } catch (error) {
-  //     history.push('/signin');
-  // }
 
   const LogoutFn = () => {
-    setAuth({token:"lll"});
+    setAuth({token:""});
     localStorage.clear();
     history.go("/");
+
+    const channel = new BroadcastChannel("logout");
+    channel.postMessage("log out now");
   };
   const isLogged = IsLoggedfn();
-  // console.log(isLogged);
-  // console.log(authContext);
-  // const isLogegd;
   if (isLogged) return <Logged LogoutFn={LogoutFn} />;
   else return <NotLogged />;
 }
@@ -47,13 +38,15 @@ function NotLogged() {
 
 function Logged({ LogoutFn }) {
   const history = useHistory();
+  const { auth } = useContext(AuthContext);
+  console.log('from header', auth);
   return (
     <Header>
       <Header.Frame>
         <Header.Logo to={ROUTES.HOME} src={logo} alt="Hypertube" />
 
         <div style={{ display: "flex" }}>
-          <Button to="/library">
+          <Button onClick={() => history.push("/watchlist")}>
             <i>
               <MovieIcon style={{ color: "#dc1b28" }} />
             </i>
@@ -64,7 +57,7 @@ function Logged({ LogoutFn }) {
               history.push("/updatedata");
               console.log("clicked");
             }}
-            src={`https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=3152&q=80`}
+            src={`http://10.12.7.10:5000${auth.image}`}
           />
           <Button onClick={() => LogoutFn()}>
             <i>

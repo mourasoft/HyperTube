@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-import { HeaderContainer } from "../../containers/header";
+import React, { useState, useEffect } from "react";
 import { Form } from "../index";
-import { FooterContainer } from "../../containers/footer";
-// import axios from 'axios';
 import { FcGoogle } from "react-icons/fc";
 import { FiGithub } from "react-icons/fi";
 import { GrFacebook } from "react-icons/gr";
@@ -15,6 +12,7 @@ import { Instance } from "../../helpers/instance";
 export default function Signup() {
   //// TESTING
   const [data, setData] = useState({
+    image: "",
     firstname: "",
     lastname: "",
     username: "",
@@ -22,7 +20,7 @@ export default function Signup() {
     password: "",
     confirm: "",
   });
-  const [img, setImg] = useState();
+  
   const [formErrors, setFormErrors] = useState({
     firstname: "",
     lastname: "",
@@ -44,10 +42,13 @@ export default function Signup() {
   const photoUpload = (e) => {
     e.preventDefault();
     const reader = new FileReader();
-    const file = e.target.files[0];
-    if (file.size !== 0) {
+    const file = e.target?.files[0];
+    if (file && file.size) {
       reader.onload = () => {
-        setImg(reader.result);
+       setData((old) => 
+         ({...old,
+         image: reader.result})
+       )
       };
       reader.readAsDataURL(file);
     }
@@ -63,24 +64,24 @@ export default function Signup() {
         }
       },
       (error) => {
-        console.log("error");
-        if (error) {
+        if (error.response) {
           Message("error", error.response.data.message);
         }
       }
     );
   }
-
+  useEffect(() => {
+    document.title = "HyperTube | Signup ";
+  });
   return (
     <>
-      {/* <HeaderContainer /> */}
       <Form>
         <Form.Title>Sign Up</Form.Title>
         <Form.Base onSubmit={handleSubmit} method="POST">
         <Form.Box>
           <label htmlFor="exampleFormControlFile1">
             <Form.Image
-              src=""
+              src={data.image ? data.image : `http://10.12.7.10:5000/images/default.svg`}
             />
           </label>
           <input
@@ -157,6 +158,9 @@ export default function Signup() {
         <Form.Text>
           Have an account? <Form.Link to="/signin">Sign in now.</Form.Link>
         </Form.Text>
+        <Form.Omniauth onClick={()=>console.log("was clicked")}>
+          <Gr42school />
+        </Form.Omniauth>
         <Form.Omniauth type="submit">
           <GrFacebook />
         </Form.Omniauth>
@@ -167,7 +171,14 @@ export default function Signup() {
           <FiGithub />
         </Form.Omniauth>
       </Form>
-      <FooterContainer />
     </>
   );
+}
+
+function Gr42school(){
+  return (
+    <>
+    <img style={{"width": "1em", "height": "1em"}} src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/512px-42_Logo.svg.png" alt="42"/>
+    </>
+  )
 }

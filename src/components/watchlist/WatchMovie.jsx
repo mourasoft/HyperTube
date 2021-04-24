@@ -2,37 +2,31 @@ import { makeStyles } from "@material-ui/core";
 import Star from "@material-ui/icons/StarOutlined";
 import Play from "@material-ui/icons/PlayCircleFilledWhiteOutlined";
 import Vue from "@material-ui/icons/RemoveRedEye";
-import ActiveWatch from "@material-ui/icons/Bookmark";
-import InactiveWatch from "@material-ui/icons/BookmarkBorder";
 import { useHistory } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import { getInstance } from "../../helpers/instance";
 import { AuthContext } from "../../context/context";
+import Delete from "@material-ui/icons/HighlightOff";
 
-const Thumbnails = ({ e, watched, view }) => {
+const WatchMovie = ({ e, watched, remove, view }) => {
   const history = useHistory();
   const classes = useStyles();
-  const [watch, setWatch] = useState(false);
+
   const [seen, setSeen] = useState(false);
   const {
     auth: { token },
   } = useContext(AuthContext);
-  // console.log(watched);
-  ///movie/watchlist/:id
+
   useEffect(() => {
-    if (watched) {
-      let filtred = watched.filter((el) => {
-        return el.movie_id === e.id;
-      });
-      if (filtred.length) setWatch(true);
-    }
     if (view) {
       let filtred = view.filter((el) => {
         return el.movie_id === e.id;
       });
       if (filtred.length) setSeen(true);
     }
-  }, [watched, view]);
+    // eslint-disable-next-line
+  }, [watched]);
+
   const addWatch = () => {
     getInstance(token)
       .post("/movie/watchlist", { id: e.id })
@@ -67,11 +61,14 @@ const Thumbnails = ({ e, watched, view }) => {
       <div
         onClick={() => {
           addWatch();
-          setWatch(!watch);
+          //   setWatch(!watch);
+          remove(e.id);
         }}
         className={classes.addtowatch}
       >
-        <i>{watch ? <ActiveWatch /> : <InactiveWatch />}</i>
+        <i>
+          <Delete />
+        </i>
       </div>
       <div className={classes.title}>
         <span>{e.title_long}</span>
@@ -89,7 +86,7 @@ const Thumbnails = ({ e, watched, view }) => {
   );
 };
 
-export default Thumbnails;
+export default WatchMovie;
 const useStyles = makeStyles((theme) => ({
   thumb: {
     width: "290px",
@@ -130,6 +127,12 @@ const useStyles = makeStyles((theme) => ({
     padding: "6px",
     cursor: "pointer",
     borderRadius: "5px",
+
+    "&:hover": {
+      color: "red",
+      transform: "scale(1.2)",
+      transition: "0.7s",
+    },
   },
   title: {
     width: "90%",
@@ -199,7 +202,6 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     backgroundColor: "#3A3B3C",
     padding: "4px",
-    // cursor: "pointer",
     borderRadius: "5px",
   },
 }));

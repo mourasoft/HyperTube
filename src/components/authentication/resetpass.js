@@ -4,8 +4,6 @@ import { useHistory, useParams } from "react-router-dom";
 import useForm from "../../helpers/usefom";
 import ValidatetokenReset from "../../helpers/validatetokenReset";
 import Message from "../notification";
-import { HeaderContainer } from "../../containers/header";
-import { FooterContainer } from "../../containers/footer";
 import { Instance } from "../../helpers/instance";
 
 export default function Reset() {
@@ -52,7 +50,6 @@ export default function Reset() {
 
   return (
     <>
-      {/* <HeaderContainer /> */}
         <Form>
           <Form.Title>Reset Password</Form.Title>
           <Form.Base onSubmit={handleSubmit} method="POST">
@@ -83,8 +80,6 @@ export default function Reset() {
             </Form.Submit>
           </Form.Base>
         </Form>
-      
-      <FooterContainer />
     </>
   );
 }

@@ -7,9 +7,8 @@ import {
   Button,
   TextField,
 } from "@material-ui/core";
-import axios from "axios";
-// import { useRef } from "react";
-// import Search from "./Search";
+
+import { ApiAllMovie } from "../../helpers/instance";
 
 const searchFunction = (
   order,
@@ -22,24 +21,21 @@ const searchFunction = (
 ) => {
   string = !/^([a-zA-Z0-9_-\s]){1,50}$/.test(string) ? (string = "") : string;
 
-  axios
-    .get(
-      `https://yts.mx/api/v2/list_movies.json?minimum_rating=${rating}&sort_by=${sorted}&genre=${genre}&query_term=${string}&order_by=${order}`
-    )
+  ApiAllMovie.get(
+    `?minimum_rating=${rating}&sort_by=${sorted}&genre=${genre}&query_term=${string}&order_by=${order}`
+  )
     .then((res) => {
       setAllMovies(res.data.data.movie_count);
       setvalue(res.data.data.movies);
     })
     .catch((er) => {
       if (er) {
-        axios
-          .get(
-            `https://yts.mx/api/v2/list_movies.json?minimum_rating=${rating}&sort_by=${sorted}&genre=${genre}&query_term=${string}&order_by=${order}`
-          )
-          .then((res) => {
-            setAllMovies(res.data.data.movie_count);
-            setvalue(res.data.data.movies);
-          });
+        ApiAllMovie.get(
+          `?minimum_rating=${rating}&sort_by=${sorted}&genre=${genre}&query_term=${string}&order_by=${order}`
+        ).then((res) => {
+          setAllMovies(res.data.data.movie_count);
+          setvalue(res.data.data.movies);
+        });
       }
     });
 };

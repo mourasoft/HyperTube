@@ -1,19 +1,12 @@
 import { Container, makeStyles, Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
-// import HeadMovie from "../components/HeadMovie";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import ReactPlayer, { setCurrentUrl } from "react-player";
-// import Synopsys from "../components/Synopsys";
-// import Cast from "../components/Cast";
+import ReactPlayer from "react-player";
 import { Comments, Cast, Synopsys, HeadMovie } from "../components/index";
-import { HeaderContainer } from "../containers/header";
-import { FooterContainer } from "../containers/footer";
+import { host } from "../constants/config";
 import { AuthContext } from "../context/context";
-
-
-
 
 const Movie = () => {
   const classes = useStyles();
@@ -23,25 +16,17 @@ const Movie = () => {
   const [sug, setSug] = useState();
   const history = useHistory();
   const [url, setUrl] = useState("");
-const authContext = useContext(AuthContext)
+  const {
+    auth: { token },
+  } = useContext(AuthContext);
+  const creatUrl = (el) => {
+    console.log(el);
+    const { id, imdb_code } = movie;
+    let url = `${host}/stream/${token}/${id}/${imdb_code}/${el.hash}`;
+    console.log("id", url);
+    setUrl(url);
+  };
 
-const {token} = authContext.auth
-
-  // useEffect(() => {
-  //   console.log('check token is called');
-  //   try {
-  //     let t = localStorage.getItem('token');
-  //     if (!t || t == undefined)
-  //       history.go('/signin');
-  //   } catch (error) {
-  //       history.go('/signin');
-  //   }
-
-  // }, [])
-  // const [url, setUrl] = useState("");
-
-  // console.log(movie);
-  // console.log(url);
   const handleQuality = async (torrents) => {
     // console.log(torrents);
     const HD = await torrents.find((el) => {
@@ -68,7 +53,7 @@ const {token} = authContext.auth
        * redirect to Library
        */
 
-      history.replace("/library");
+      history.replace("/");
     } else {
       /*
        * Get Data
@@ -83,6 +68,7 @@ const {token} = authContext.auth
             // console.log(data.data);
             if (data && data.data.movie.imdb_code !== "tt") {
               const { movie } = data.data;
+              await setMovie(movie);
               axios
                 .get(
                   `https://yts.mx/api/v2/movie_suggestions.json?movie_id=${id}`
@@ -92,31 +78,26 @@ const {token} = authContext.auth
                   const { movies } = res.data.data;
                   setSug(movies);
                 });
-              await setMovie(movie);
               await handleQuality(movie.torrents);
             } else {
               /*
                * redirect to Library
                */
 
-              history.replace("/library");
+              history.replace("/");
             }
           });
       } catch (e) {}
     }
+    return () => {
+      setUrl("");
+    };
   }, [id]);
   const filterd = quality.filter((el) => el);
-  // useEffect(() => {
-  //   console.log("filtred", filterd);
-  //   if (filterd) {
-  //     console.log("useffct dyal filter");
-  //   }
-  //   // url ={http://10.12.7.10:5000/api/v1/movie/stream/imdcode/${url}}
-  // }, [filterd]);
-  // console.log(filterd);
+
   useEffect(() => {
     if (movie) {
-      console.log(movie);
+      // console.log(movie);
       document.title = `${movie?.title_long}`;
     }
   }, [movie]);
@@ -135,16 +116,7 @@ const {token} = authContext.auth
               controls
               width="100%"
               height="auto"
-              // onStart={() => {
-              //   setCurrentUrl(
-              //     `http://10.12.7.10:5000/api/v1/movie/stream/${
-              //       movie && movie?.imdb_code
-              //     }/${filterd[0] && filterd[0]?.hash}`
-              //   );
-              // }}
-              // url={`http://10.12.7.10:5000/api/v1/movie/stream/${
-              //   movie && movie?.imdb_code
-              // }/${filterd[0] && filterd[0]?.hash}`}
+              url={url}
               light={movie?.large_cover_image}
               onError={(e) => {
                 console.log(e);
@@ -184,6 +156,7 @@ const {token} = authContext.auth
             {filterd.map((el, i) => (
               // <span key={i}>{el.quality}</span>
               <Button
+                onClick={() => creatUrl(el)}
                 style={{ margin: "5px" }}
                 key={i}
                 color="secondary"
@@ -197,7 +170,6 @@ const {token} = authContext.auth
           <Comments id={id} />
         </div>
       </Container>
-      <FooterContainer />
     </>
   );
 };

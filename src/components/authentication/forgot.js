@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { HeaderContainer } from "../../containers/header";
+import React, { useState, useEffect } from "react";
 import { Form } from "../index";
-import { FooterContainer } from "../../containers/footer";
 import useForm from "../../helpers/usefom";
 import validateSignIn from "../../helpers/validateReset";
 import Message from "../notification";
@@ -37,10 +35,11 @@ export default function Forgot() {
       }
     );
   }
-
+  useEffect(() => {
+    document.title = "HyperTube | Reset ";
+  });
   return (
     <>
-      {/* <HeaderContainer /> */}
         <Form>
           <Form.Title>Reset</Form.Title>
           <Form.Base onSubmit={handleSubmit} method="POST">
@@ -62,7 +61,6 @@ export default function Forgot() {
             Have an account? <Form.Link to="/signin">Sign in now.</Form.Link>
           </Form.Text>
         </Form>
-      <FooterContainer />
     </>
   );
 }

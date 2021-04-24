@@ -8,31 +8,47 @@ import {
   Updatedata,
   Reset,
   User,
+  Omniauth,
 } from "./pages";
-// import * as ROUTES from "./constants/routes";
+import { HeaderContainer } from './containers/header';
+import { FooterContainer } from './containers/footer';
 import { AuthProvider, IsLoggedfn } from "./context/context";
 import Library from "./pages/Library";
 import Movie from "./pages/movie";
-import { useEffect } from "react";
-import { HeaderContainer } from "./containers/header";
+import { useContext } from "react";
+import Watchlist from "./pages/Watchlist";
+import { AuthContext } from "./context/context";
 
 function App() {
   const isAuthenticated = IsLoggedfn();
-  console.log("logged", isAuthenticated);
+  const channel = new BroadcastChannel("logout");
+  const { setAuth } = useContext(AuthContext);
+
+  channel.addEventListener("message", (event) => {
+    setAuth("");
+    localStorage.clear();
+  });
+
   return (
     <Router>
       <HeaderContainer />
       <Switch>
         <Route exact path="/confirm/:token" component={Confirm} />
         <Route exact path="/reset/:token" component={Reset} />
+        <Route exact path="/omniauth/:id" component={Omniauth}/>
+        <Route path="/watchlist" component={Watchlist} />
         <Route
           path="/updatedata"
-          component={isAuthenticated ? Updatedata : Signin}
+          render={(props) => {
+            if (isAuthenticated) {
+              if (typeof isAuthenticated === "string") return <Updatedata />;
+            } else return <Signin />;
+          }}
         />
         <Route
           path="/user/:id"
           render={(props) => {
-            if (isAuthenticated !== undefined) {
+            if (isAuthenticated) {
               if (typeof isAuthenticated === "string") return <User />;
               else return <Signin />;
             }
@@ -41,10 +57,9 @@ function App() {
         <Route
           path="/movie/:id"
           render={(props) => {
-            if (isAuthenticated !== undefined) {
+            if (isAuthenticated) {
               if (typeof isAuthenticated === "string") return <Movie />;
-              else return <Signin />;
-            }
+            } else return <Signin />;
           }}
         />
         <Route path="/signin" component={!isAuthenticated ? Signin : Library} />
@@ -53,13 +68,13 @@ function App() {
         <Route
           path="/"
           render={(props) => {
-            if (isAuthenticated !== undefined) {
+            if (isAuthenticated) {
               if (typeof isAuthenticated === "string") return <Library />;
-              else return <Signin />;
-            }
+            } else return <Signin />;
           }}
         />
       </Switch>
+      <FooterContainer />
     </Router>
   );
 }
