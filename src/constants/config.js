@@ -5,5 +5,5 @@ const FRONTURL = "http://10.12.7.13:3000";
 module.exports = {
   host: URL,
   img: IMG,
-  client: FRONTURL,
+  front: FRONTURL,
 };

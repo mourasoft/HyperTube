@@ -8,7 +8,7 @@ import { AuthContext } from "../../context/context";
 import useForm from "../../helpers/usefom";
 import validateSignIn from "../../helpers/validateSignin";
 import Message from "../notification";
-import { Instance, client } from "../../helpers/instance";
+import { Instance, urlGithub, urlIntra } from "../../helpers/instance";
 
 export default function Signin() {
   const { setAuth } = useContext(AuthContext);
@@ -100,13 +100,7 @@ export default function Signin() {
         <Form.Text>
           Forgot password? <Form.Link to="/forgot">Forgot.</Form.Link>
         </Form.Text>
-        <Form.Omniauth
-          onClick={() =>
-            window.open(
-              `http://api.intra.42.fr/oauth/authorize?client_id=57b5ab3c42e7495e50cb4a00cb262df5cd809cbecd97e8ef879eee6199287c7b&redirect_uri=http://10.12.7.13:3000/omniauth/intra&response_type=code`
-            )
-          }
-        >
+        <Form.Omniauth onClick={() => window.open(urlIntra)}>
           <Gr42school />
         </Form.Omniauth>
         <Form.Omniauth type="submit">
@@ -115,20 +109,13 @@ export default function Signin() {
         <Form.Omniauth type="submit">
           <FcGoogle />
         </Form.Omniauth>
-        <Form.Omniauth
-          onClick={() =>
-            window.open(
-              `https://github.com/login/oauth/authorize?client_id=365d2eca620e2290f5ad&redirect_uri=http://10.12.7.13:3000/omniauth/github`
-            )
-          }
-        >
+        <Form.Omniauth onClick={() => window.open(urlGithub)}>
           <FiGithub />
         </Form.Omniauth>
       </Form>
     </>
   );
 }
-//github.com/login/oauth/authorize?client_id=365d2eca620e2290f5ad&redirect_uri=http://10.12.7.13:3000/omniauth/github
 function Gr42school() {
   return (
     <>
