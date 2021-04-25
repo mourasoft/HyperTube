@@ -100,7 +100,13 @@ export default function Signin() {
         <Form.Text>
           Forgot password? <Form.Link to="/forgot">Forgot.</Form.Link>
         </Form.Text>
-        <Form.Omniauth type="submit">
+        <Form.Omniauth
+          onClick={() =>
+            window.open(
+              `http://api.intra.42.fr/oauth/authorize?client_id=57b5ab3c42e7495e50cb4a00cb262df5cd809cbecd97e8ef879eee6199287c7b&redirect_uri=http%3A%2F%2F10.12.7.13%3A3000%2Fomniauth&response_type=code`
+            )
+          }
+        >
           <Gr42school />
         </Form.Omniauth>
         <Form.Omniauth type="submit">
@@ -117,10 +123,14 @@ export default function Signin() {
   );
 }
 
-function Gr42school(){
+function Gr42school() {
   return (
     <>
-    <img style={{"width": "1em", "height": "1em"}} src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/512px-42_Logo.svg.png" alt="42"/>
+      <img
+        style={{ width: "1em", height: "1em" }}
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/512px-42_Logo.svg.png"
+        alt="42"
+      />
     </>
-  )
+  );
 }

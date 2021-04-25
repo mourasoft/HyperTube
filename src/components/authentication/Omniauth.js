@@ -14,7 +14,7 @@ export default function Omniauth(props) {
           console.log(res);
         })
         .catch((e) => {
-          console.log(e);
+          console.log("error", e.response);
         });
     } else console.log("not corect"); //Need error message Here to tell the user wrong Params
   }, []);
