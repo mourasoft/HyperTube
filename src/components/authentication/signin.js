@@ -103,7 +103,7 @@ export default function Signin() {
         <Form.Omniauth
           onClick={() =>
             window.open(
-              `http://api.intra.42.fr/oauth/authorize?client_id=57b5ab3c42e7495e50cb4a00cb262df5cd809cbecd97e8ef879eee6199287c7b&redirect_uri=${client}/omniauth/intra&response_type=code`
+              `http://api.intra.42.fr/oauth/authorize?client_id=57b5ab3c42e7495e50cb4a00cb262df5cd809cbecd97e8ef879eee6199287c7b&redirect_uri=http://10.12.7.13:3000/omniauth/intra&response_type=code`
             )
           }
         >
