@@ -4,7 +4,7 @@ import { Link as ReachRouterLink } from 'react-router-dom';
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 660px;
+  // min-height: 660px;
   background-color: rgba(0, 0, 0, 0.75);
   border-radius: 5px;
   width: 60vw;

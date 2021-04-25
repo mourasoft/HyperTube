@@ -32,6 +32,7 @@ const Thumbnails = ({ e, watched, view }) => {
       });
       if (filtred.length) setSeen(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watched, view]);
   const addWatch = () => {
     getInstance(token)

@@ -37,6 +37,7 @@ export default function Intra(props) {
       Message("error", "Wrong Params");
       history.push("/signin");
     }
+       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

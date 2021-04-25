@@ -83,6 +83,7 @@ const Movie = () => {
     return () => {
       setUrl("");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   const filterd = quality.filter((el) => el);
 

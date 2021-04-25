@@ -2,17 +2,11 @@ import React, { useState, createContext, useEffect, useContext } from "react";
 import { getInstance, imgUrl } from "../helpers/instance";
 
 export const AuthContext = createContext();
-let username;
 let token;
-let image;
-let language;
 try {
   token = localStorage?.getItem("token");
-  language = localStorage?.getItem("language");
 } catch (error) {
   token = "";
-
-  language = "";
 }
 export function AuthProvider(props) {
   const [auth, setAuth] = useState({

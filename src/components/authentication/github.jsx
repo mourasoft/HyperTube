@@ -1,4 +1,4 @@
-import { useParams, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Message from "../notification";
 import { Instance, imgUrl } from "../../helpers/instance";
 import { useEffect, useContext } from "react";
@@ -39,6 +39,7 @@ export default function GitHub(props) {
       Message("error", "Wrong params");
       history.push("/signin");
     }
+       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;
