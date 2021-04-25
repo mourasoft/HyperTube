@@ -20,21 +20,17 @@ const Movie = () => {
     auth: { token },
   } = useContext(AuthContext);
   const creatUrl = (el) => {
-    console.log(el);
     const { id, imdb_code } = movie;
     let url = `${host}/stream/${token}/${id}/${imdb_code}/${el.hash}`;
-    console.log("id", url);
     setUrl(url);
   };
 
   const handleQuality = async (torrents) => {
-    // console.log(torrents);
     const HD = await torrents.find((el) => {
       return el.quality === "720p";
     });
     const QHD = await torrents.find((el) => {
       return el.quality === "1080p";
-      // return { n: "null" };
     });
     const D = await torrents.find((el) => {
       return el.quality === "3D";
@@ -65,7 +61,7 @@ const Movie = () => {
           )
           .then(async (res) => {
             const { data } = res;
-            // console.log(data.data);
+
             if (data && data.data.movie.imdb_code !== "tt") {
               const { movie } = data.data;
               await setMovie(movie);
@@ -74,16 +70,11 @@ const Movie = () => {
                   `https://yts.mx/api/v2/movie_suggestions.json?movie_id=${id}`
                 )
                 .then((res) => {
-                  // console.log(res.data.data);
                   const { movies } = res.data.data;
                   setSug(movies);
                 });
               await handleQuality(movie.torrents);
             } else {
-              /*
-               * redirect to Library
-               */
-
               history.replace("/");
             }
           });
@@ -97,7 +88,6 @@ const Movie = () => {
 
   useEffect(() => {
     if (movie) {
-      // console.log(movie);
       document.title = `${movie?.title_long}`;
     }
   }, [movie]);
@@ -117,10 +107,8 @@ const Movie = () => {
               width="100%"
               height="auto"
               url={url}
-              light={movie?.large_cover_image}
-              onError={(e) => {
-                console.log(e);
-              }}
+              // light={movie?.large_cover_image}
+
               config={{
                 file: {
                   tracks: [
@@ -182,89 +170,3 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "5%",
   },
 }));
-
-// console.log("9lawi", quality);
-// try {
-//   axios
-//     .get(
-//       `https://yts.megaproxy.biz/api/v2/movie_details.json?movie_id=${id}&with_images=true&with_cast=true`
-//     )
-//     .then((res) => {
-//       console.log(res.data);
-//       if (!res.data) {
-//         /*
-//          *
-//          * no data in ipa return to library
-//          */
-//         console.log("no data");
-//       } else {
-//         console.log("data kayna");
-//       }
-//       // setMovie(res.data.data.movie);
-//       // axios
-//       //   .post(`http://10.12.7.10:5000/api/v1/movie`, {
-//       //     movie: res.data.data.movie,
-//       //   })
-//       //   .then((res) => {
-//       //     // console.log("res ===>", res);
-
-//       //     let element = document.getElementById("videostream");
-//       //     element = element.getElementsByTagName("video")[0];
-//       //     element.setAttribute(
-//       //       "src",
-//       //       `http://10.12.7.10:5000/api/v1/movie/stream/${res.data.hash}`
-//       //     );
-
-//       //     element.load();
-//       //     // setUrl(
-//       //     //   `http://10.12.7.10:5000/api/v1/movie/stream/${res.data.hash}`
-//       //     // );
-//       //   });
-//     });
-// } catch (e) {}
-// console.log(movie);
-
-// const Player = (url) => {
-//   return (
-//     <div style={{ marginTop: "64px", marginBottom: "64px" }}>
-//       <ReactPlayer
-//         id="videostream"
-//         controls
-//         width="100%"
-//         height="auto"
-//         url={[
-//           {
-//             src: `http://10.12.7.10:5000/api/v1/movie/stream/${url}`,
-//             type: "video/mp4",
-//           },
-//         ]}
-//         onError={(e) => {
-//           console.log(e);
-//         }}
-//         config={{
-//           file: {
-//             tracks: [
-//               {
-//                 kind: "en",
-//                 src: "subs/subtitles.en.vtt",
-//                 srcLang: "ar",
-//                 default: true,
-//               },
-//               {
-//                 kind: "fr",
-//                 src: "subs/subtitles.ja.vtt",
-//                 srcLang: "ar",
-//               },
-//               {
-//                 kind: "ar",
-//                 src: "subs/subtitles.de.vtt",
-//                 srcLang: "ar",
-//               },
-//             ],
-//           },
-//         }}
-//         // optio
-//       />
-//     </div>
-//   );
-// };

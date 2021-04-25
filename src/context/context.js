@@ -1,5 +1,5 @@
 import React, { useState, createContext, useEffect, useContext } from "react";
-import { getInstance } from "../helpers/instance";
+import { getInstance, imgUrl } from "../helpers/instance";
 
 export const AuthContext = createContext();
 let username;
@@ -7,19 +7,15 @@ let token;
 let image;
 let language;
 try {
-  username = localStorage?.getItem("username");
   token = localStorage?.getItem("token");
-  image = localStorage?.getItem("image");
   language = localStorage?.getItem("language");
 } catch (error) {
-  // username = "",
   token = "";
-  // image = "";
-  // language = "";
+
+  language = "";
 }
 export function AuthProvider(props) {
   const [auth, setAuth] = useState({
-    username: "",
     token: "",
     image: "",
     language: "",
@@ -32,12 +28,13 @@ export function AuthProvider(props) {
           .get("/account/me")
           .then((res) => {
             const { image, language } = res.data.user;
+            const t = image.startsWith("https");
+            let pic = t ? image : `${imgUrl}${image}`;
             setAuth((oldValue) => ({
               ...oldValue,
               token,
-              image,
+              image: pic,
               language,
-              username,
             }));
           })
           .catch((e) => {

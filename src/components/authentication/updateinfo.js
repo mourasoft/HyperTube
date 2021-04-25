@@ -7,7 +7,7 @@ import validateUpdateinfo from "../../helpers/validateUpdateinfo";
 import { getInstance } from "../../helpers/instance";
 
 function Update() {
-  const { auth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
   const [data, setData] = useState({
     image: "",
     firstname: "",
@@ -46,7 +46,6 @@ function Update() {
           .then((res) => {
             Message("success", res.data.message);
             window.location.reload(false);
-
             setData((old) => ({ ...old, image: res.data.image }));
           })
           .catch((e) => {
@@ -72,21 +71,25 @@ function Update() {
             image,
             language,
           } = res.data.user;
+          const t = image.startsWith("https");
+          console.log(t);
+          let img = t ? image : `http://10.12.7.10:5000${image}`;
+          // console.log(image);
           setData((old) => ({
             ...old,
             firstname,
             lastname,
             username,
             email,
-            image,
+            image: img,
             language,
           }));
-          
+          setAuth((old) => ({ ...old, image: img }));
+
           // localStorage.removeItem('token');
           // localStorage.removeItem('username');
           // localStorage.removeItem('lng');
           // localStorage.removeItem('image');
-          // authContext.setAuth({});
           // history.push("/signin");
         })
         .catch((e) => {});
@@ -110,7 +113,7 @@ function Update() {
         );
     }
   }
-  const t = data.image.startsWith("https");
+  // const t = data.image.startsWith("https");
 
   return (
     <>
@@ -118,9 +121,7 @@ function Update() {
       <Form.Base onSubmit={handleSubmit} method="POST">
         <Form.Box>
           <label htmlFor="exampleFormControlFile1">
-            <Form.Image 
-              src={t === true ? data.image : `http://10.12.7.10:5000${data.image}`}
-            />
+            <Form.Image src={data.image} />
           </label>
           <input
             type="file"

@@ -1,18 +1,16 @@
-import { useParams, useHistory } from "react-router-dom";
-import Message from "../notification";
+import { useHistory } from "react-router-dom";
 import { Instance, imgUrl } from "../../helpers/instance";
 import { useEffect, useContext } from "react";
+import Message from "../notification";
 import { AuthContext } from "../../context/context";
 
-export default function GitHub(props) {
+export default function Intra(props) {
   const { setAuth } = useContext(AuthContext);
   const history = useHistory();
-
   useEffect(() => {
     const code = new URLSearchParams(props.location.search).get("code");
     if (code) {
-      console.log(code);
-      Instance.post(`/omniauth/github/login`, { code })
+      Instance.post(`/omniauth/intra/login`, { code })
         .then((res) => {
           const {
             token,
@@ -21,14 +19,14 @@ export default function GitHub(props) {
           } = res.data;
 
           const t = image.startsWith("https");
-          let img = t ? image : `${imgUrl}${image}`;
+          let pic = t ? image : `${imgUrl}${image}`;
           try {
             localStorage.setItem("token", token);
             localStorage.setItem("language", language);
           } catch (error) {
             return;
           }
-          setAuth({ language, image: img, token });
+          setAuth({ language, image: pic, token });
           history.push("/");
           Message("success", message);
         })
@@ -36,7 +34,7 @@ export default function GitHub(props) {
           console.log("error", e.response);
         });
     } else {
-      Message("error", "Wrong params");
+      Message("error", "Wrong Params");
       history.push("/signin");
     }
   }, []);

@@ -10,14 +10,11 @@ const useForm = (callback, validate, values, setValues, errors, setErrors) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const foundErrors = validate(values);
-    console.log(foundErrors);
-    // console.log(foundErrors)
     setErrors(foundErrors);
     const filteredByValue = Object.fromEntries(
       Object.entries(foundErrors).filter(([key, value]) => value !== "")
     );
     const errorsLen = Object.keys(filteredByValue).length;
-    // console.log(errorsLen)
     if (!errorsLen) {
       callback();
     }

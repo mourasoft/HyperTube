@@ -5,13 +5,6 @@ import { getInstance, imgUrl } from "../../helpers/instance";
 import { AuthContext } from "../../context/context";
 import moment from "moment";
 
-// movie/comment
-
-/*
- * id
- * comment
- */
-
 export default function Comments({ id }) {
   const authContext = useContext(AuthContext);
   const { token, image } = authContext.auth;
@@ -29,10 +22,6 @@ export default function Comments({ id }) {
         // console.log(e);
         setComments([]);
       });
-    // return () => {
-    //   // console.log("wasi unmount");
-    //   return setComments("");
-    // };
   }, [token, id]);
 
   const handleComment = (e) => {
@@ -97,7 +86,7 @@ function HeadComent({ classes, handleComment, send, comment, image }) {
       }}
     >
       <div className={classes.userAvatar}>
-        <Avatar src={`${imgUrl}${image}`} />
+        <Avatar src={image} />
       </div>
       <div style={{ flexBasis: "90%" }}>
         <TextField
@@ -132,7 +121,7 @@ function Comment({ classes, el: { username, comment, image, created_at } }) {
           <Avatar
             className={classes.profil}
             onClick={() => window.open(`/user/${username}`)}
-            src={`${imgUrl}${image}`}
+            src={image.startsWith("https") ? image : `${imgUrl}${image}`}
             alt={username}
           />
         </div>

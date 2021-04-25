@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Form } from "../index";
 import { AuthContext } from "../../context/context";
 import { useParams } from "react-router-dom";
-import { getInstance } from "../../helpers/instance";
+import { getInstance, imgUrl } from "../../helpers/instance";
 
 export default function User() {
   //// TESTING
@@ -25,7 +25,6 @@ export default function User() {
       getInstance(auth.token)
         .get(`/account/${id}`)
         .then((res) => {
-          console.log("res", res);
           const {
             firstname,
             lastname,
@@ -35,22 +34,18 @@ export default function User() {
             watches,
             favorite,
           } = res.data.data;
+          const t = image.startsWith("https");
+          let pic = t ? image : `${imgUrl}${image}`;
           setData((old) => ({
             ...old,
             firstname,
             lastname,
             username,
-            image,
+            image: pic,
             language,
             watches,
             favorite,
           }));
-          // console.log(data);
-          // localStorage.removeItem('token');
-          // localStorage.removeItem('username');
-          // localStorage.removeItem('language');
-          // localStorage.removeItem('image');
-          // authContext.setAuth({});
         })
         .catch((e) => {
           console.log("errrrrror");
@@ -65,9 +60,7 @@ export default function User() {
         <Form.Base method="POST">
           <Form.Box>
             <label htmlFor="exampleFormControlFile1">
-              <Form.Image
-                src={!data.image ? "" : `http://10.12.7.10:5000${data.image}`}
-              />
+              <Form.Image src={data.image} />
             </label>
           </Form.Box>
           <Form.Text>First Name</Form.Text>
