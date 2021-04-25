@@ -10,8 +10,8 @@ import {
   User,
   Omniauth,
 } from "./pages";
-import { HeaderContainer } from './containers/header';
-import { FooterContainer } from './containers/footer';
+import { HeaderContainer } from "./containers/header";
+import { FooterContainer } from "./containers/footer";
 import { AuthProvider, IsLoggedfn } from "./context/context";
 import Library from "./pages/Library";
 import Movie from "./pages/movie";
@@ -35,7 +35,7 @@ function App() {
       <Switch>
         <Route exact path="/confirm/:token" component={Confirm} />
         <Route exact path="/reset/:token" component={Reset} />
-        <Route exact path="/omniauth/:id" component={Omniauth}/>
+        <Route exact path="/omniauth" component={Omniauth} />
         <Route path="/watchlist" component={Watchlist} />
         <Route
           path="/updatedata"
