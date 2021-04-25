@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Form } from "../index";
-import { FcGoogle } from "react-icons/fc";
-import { FiGithub } from "react-icons/fi";
-import { GrFacebook } from "react-icons/gr";
 import Message from "../notification";
 import useForm from "../../helpers/usefom";
 import validateSignUp from "../../helpers/validateSignup";

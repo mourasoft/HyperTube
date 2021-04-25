@@ -8,7 +8,8 @@ import {
   Updatedata,
   Reset,
   User,
-  Omniauth,
+  Intra,
+  Github,
 } from "./pages";
 import { HeaderContainer } from "./containers/header";
 import { FooterContainer } from "./containers/footer";
@@ -35,7 +36,9 @@ function App() {
       <Switch>
         <Route exact path="/confirm/:token" component={Confirm} />
         <Route exact path="/reset/:token" component={Reset} />
-        <Route exact path="/omniauth" component={Omniauth} />
+        <Route exact path="/omniauth/intra" component={Intra} />
+        <Route exact path="/omniauth/github" component={Github} />
+        {/* <Route exact path="/omniauth/intra" component={Omniauth} /> */}
         <Route path="/watchlist" component={Watchlist} />
         <Route
           path="/updatedata"

@@ -6,4 +6,5 @@ export { default as Updatedata } from "../components/authentication/updatedata";
 export { default as Confirm } from "../components/authentication/confirm";
 export { default as Reset } from "../components/authentication/resetpass";
 export { default as User } from "../components/authentication/user";
-export { default as Omniauth } from "../components/authentication/Omniauth";
+export { default as Intra } from "../components/authentication/intra";
+export { default as Github } from "../components/authentication/github";

@@ -1,9 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
+import Message from "../notification";
 import { Instance } from "../../helpers/instance";
 import { useEffect } from "react";
 
-export default function Omniauth(props) {
+export default function Intra(props) {
   //   let params = new URLSearchParams(props.location.search).get("code");
+  const history = useHistory();
   useEffect(() => {
     console.log("in use efect");
     const code = new URLSearchParams(props.location.search).get("code");
@@ -14,9 +16,14 @@ export default function Omniauth(props) {
           console.log(res);
         })
         .catch((e) => {
+          
           console.log("error", e.response);
         });
-    } else console.log("not corect"); //Need error message Here to tell the user wrong Params
+    } else {
+      Message('error','Need error message Here to tell the user wrong Params');
+      history.push('/signin');
+    }
+    //Need error message Here to tell the user wrong Params
   }, []);
 
   return null;
