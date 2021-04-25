@@ -66,18 +66,20 @@ const Library = () => {
         .then((res) => {
           const { watches } = res.data;
           setView(watches);
-        });
+        })
+        .catch((e) => {});
       getInstance(token)
         .get(`/movie/watchlist`)
         .then((res) => {
           const { watchlist } = res.data;
           setWatched(watchlist);
-        });
-      getInstance(token)
-        .get(`/movie/watches`)
-        .then((res) => {
-          // console.log(res);
-        });
+        })
+        .catch((e) => {});
+      // getInstance(token)
+      //   .get(`/movie/watches`)
+      //   .then((res) => {
+      //     // console.log(res);
+      //   });
       ApiAllMovie.get(`?sort_by=${num.sorted}&order_by=${num.order}`)
         .then((res) => {
           setMovieCount(res.data.data.movie_count);
