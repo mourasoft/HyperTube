@@ -31,7 +31,6 @@ export function AuthProvider(props) {
         getInstance(token)
           .get("/account/me")
           .then((res) => {
-            console.log("context", res.data.user);
             const { image, language } = res.data.user;
             setAuth((oldValue) => ({
               ...oldValue,
@@ -53,7 +52,7 @@ export function AuthProvider(props) {
       setAuth((oldValue) => {
         return { ...oldValue, token: "" };
       });
-      localStorage.clear();
+      // localStorage.clear();
     }
   }, []);
 

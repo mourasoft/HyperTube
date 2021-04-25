@@ -15,7 +15,7 @@ export function HeaderContainer() {
   const LogoutFn = () => {
     setAuth({token:""});
     localStorage.clear();
-    history.go("/");
+    history.go("/signin");
 
     const channel = new BroadcastChannel("logout");
     channel.postMessage("log out now");
@@ -39,7 +39,7 @@ function NotLogged() {
 function Logged({ LogoutFn }) {
   const history = useHistory();
   const { auth } = useContext(AuthContext);
-  console.log('from header', auth);
+  const t = auth.image.startsWith("https");
   return (
     <Header>
       <Header.Frame>
@@ -57,7 +57,7 @@ function Logged({ LogoutFn }) {
               history.push("/updatedata");
               console.log("clicked");
             }}
-            src={`http://10.12.7.10:5000${auth.image}`}
+            src={t === true ? auth.image : `http://10.12.7.10:5000${auth.image}`}
           />
           <Button onClick={() => LogoutFn()}>
             <i>

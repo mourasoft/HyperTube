@@ -14,9 +14,10 @@ export default function Intra(props) {
       Instance.post(`/omniauth/intra/login`, { code })
         .then((res) => {
           console.log(res);
+          console.log('daaaz');
+          history.push('/library');
         })
         .catch((e) => {
-          
           console.log("error", e.response);
         });
     } else {

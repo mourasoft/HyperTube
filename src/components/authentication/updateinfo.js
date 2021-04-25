@@ -45,7 +45,8 @@ function Update() {
           .post("/account/upload", { image: reader.result })
           .then((res) => {
             Message("success", res.data.message);
-            // localStorage.setItem("image", res.data.data.image);
+            window.location.reload(false);
+
             setData((old) => ({ ...old, image: res.data.image }));
           })
           .catch((e) => {
@@ -63,7 +64,6 @@ function Update() {
       getInstance(auth.token)
         .get("/account/me")
         .then((res) => {
-          // console.log("all data", res.data);
           const {
             firstname,
             lastname,
@@ -81,6 +81,7 @@ function Update() {
             image,
             language,
           }));
+          
           // localStorage.removeItem('token');
           // localStorage.removeItem('username');
           // localStorage.removeItem('lng');
@@ -98,7 +99,6 @@ function Update() {
         .post(`/account/update/info`, values)
         .then(
           (res) => {
-            console.log("values : ", values);
             if (res.data.status === 200) {
               Message("success", res.data.message);
               // history.push("/library");
@@ -110,7 +110,7 @@ function Update() {
         );
     }
   }
-  console.log("language", data.language);
+  const t = data.image.startsWith("https");
 
   return (
     <>
@@ -118,8 +118,8 @@ function Update() {
       <Form.Base onSubmit={handleSubmit} method="POST">
         <Form.Box>
           <label htmlFor="exampleFormControlFile1">
-            <Form.Image
-              src={data.image && `http://10.12.7.10:5000${data.image}`}
+            <Form.Image 
+              src={t === true ? data.image : `http://10.12.7.10:5000${data.image}`}
             />
           </label>
           <input
