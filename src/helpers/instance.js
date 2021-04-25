@@ -1,7 +1,7 @@
 import axios from "axios";
 const config = require("../constants/config");
 
-const { host, img } = config;
+const { host, img, front } = config;
 
 export function getInstance(token) {
   return axios.create({
@@ -24,4 +24,4 @@ export const BackupAllMovie = axios.create({
   baseURL: `https://yts.megaproxy.biz/api/v2/list_movies.json`,
 });
 
-export const Intra = ``
+export const client = front;

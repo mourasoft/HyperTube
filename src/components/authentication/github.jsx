@@ -9,21 +9,21 @@ export default function GitHub(props) {
   useEffect(() => {
     console.log("in use efect");
     const code = new URLSearchParams(props.location.search).get("code");
+    console.log(code);
     if (code) {
       console.log(code);
-      Instance.post(`/omniauth/intra/login`, { code })
+      Instance.post(`/omniauth/github/login`, { code })
         .then((res) => {
           console.log(res);
         })
         .catch((e) => {
-          
           console.log("error", e.response);
         });
     } else {
-      Message('error','Need error message Here to tell the user wrong Params');
-      history.push('/signin');
+      Message("error", "Need error message Here to tell the user wrong Params");
+      history.push("/signin");
     }
-    //Need error message Here to tell the user wrong Params
+    // Need error message Here to tell the user wrong Params
   }, []);
 
   return null;
