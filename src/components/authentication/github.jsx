@@ -9,7 +9,10 @@ export default function GitHub(props) {
   const history = useHistory();
 
   useEffect(() => {
-    const code = new URLSearchParams(props.location.search).get("code");
+    const code = new URLSearchParams(props.location.search.substring(1)).get(
+      "code"
+    );
+
     if (code) {
       Instance.post(`/omniauth/github/login`, { code })
         .then((res) => {
@@ -30,9 +33,11 @@ export default function GitHub(props) {
           setAuth({ language, image: img, token });
           history.push("/");
           Message("success", message);
+          window.opener.location.reload(true);
+          window.close();
         })
         .catch((e) => {
-          Message("error", e.response.message);
+          Message("error", e.response?.message);
           history.push("/signin");
         });
     } else {

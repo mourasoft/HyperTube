@@ -11,10 +11,16 @@ const useForm = (callback, validate, values, setValues, errors, setErrors) => {
     e.preventDefault();
     const foundErrors = validate(values);
     setErrors(foundErrors);
-    const filteredByValue = Object.fromEntries(
-      Object.entries(foundErrors).filter(([key, value]) => value !== "")
-    );
-    const errorsLen = Object.keys(filteredByValue).length;
+    // console.log(typeof foundErrors);
+
+    const valuesPolyfill = function values(object) {
+      return Object.keys(object).map((key) => object[key]);
+    };
+
+    let errors = valuesPolyfill(foundErrors);
+    errors = errors.filter((el) => el !== "");
+
+    const errorsLen = errors.length;
     if (!errorsLen) {
       callback();
     }

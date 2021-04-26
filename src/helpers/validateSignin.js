@@ -1,16 +1,9 @@
-import {
-    validatePassword,
-    validateUser,
-} from "./validators";
+import { validatePassword, validateUser } from "./validators";
 
-export default function validateSignIn({
-                                           username,
-                                           password,
+export default function validateSignIn({ username, password }) {
+  const errors = {};
 
-                                       }) {
-    const errors = {};
-
-    errors.username = validateUser(username, "username");
-    errors.password = validatePassword(password, "password");
-    return errors;
+  errors.username = validateUser(username, "username");
+  errors.password = validatePassword(password, "password");
+  return errors;
 }

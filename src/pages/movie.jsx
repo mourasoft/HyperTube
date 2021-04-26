@@ -7,6 +7,7 @@ import ReactPlayer from "react-player";
 import { Comments, Cast, Synopsys, HeadMovie } from "../components/index";
 import { host } from "../constants/config";
 import { AuthContext } from "../context/context";
+import { getInstance, imgUrl } from "../helpers/instance";
 
 const Movie = () => {
   const classes = useStyles();
@@ -16,6 +17,7 @@ const Movie = () => {
   const [sug, setSug] = useState();
   const history = useHistory();
   const [url, setUrl] = useState("");
+  const [sub, setSub] = useState([]);
   const {
     auth: { token },
   } = useContext(AuthContext);
@@ -65,6 +67,26 @@ const Movie = () => {
             if (data && data.data.movie.imdb_code !== "tt") {
               const { movie } = data.data;
               await setMovie(movie);
+
+              getInstance(token)
+                .get(`/subtitle/${movie.imdb_code}`)
+                .then((res) => {
+                  console.log(res.data);
+                  let subs = res.data.subtitles;
+                  if (!subs || subs.length === 0) return;
+                  let d = document.getElementById("videostream");
+                  let video = d.getElementsByTagName("video")[0];
+                  video.setAttribute("crossOrigin", "anonymous");
+                  subs.forEach((element) => {
+                    let track = document.createElement("track");
+                    track.setAttribute("kind", "captions");
+                    track.setAttribute("srclang", element.lang);
+                    track.setAttribute("src", `${imgUrl}${element.url}`);
+                    track.setAttribute("type", "text/ttml");
+                    video.appendChild(track);
+                  });
+                  console.log(res.data.subtitles);
+                });
               axios
                 .get(
                   `https://yts.mx/api/v2/movie_suggestions.json?movie_id=${id}`
@@ -110,28 +132,19 @@ const Movie = () => {
               url={url}
               // light={movie?.large_cover_image}
 
-              config={{
-                file: {
-                  tracks: [
-                    {
-                      kind: "en",
-                      src: "subs/subtitles.en.vtt",
-                      srcLang: "ar",
-                      default: true,
-                    },
-                    {
-                      kind: "fr",
-                      src: "subs/subtitles.ja.vtt",
-                      srcLang: "ar",
-                    },
-                    {
-                      kind: "ar",
-                      src: "subs/subtitles.de.vtt",
-                      srcLang: "ar",
-                    },
-                  ],
-                },
-              }}
+              // config={{
+              //   file: {
+              //     tracks: [
+              //       {
+              //         kind: "fr",
+              //         src:
+              //           "http://iandevlin.github.io/mdn/video-player-with-captions/subtitles/vtt/sintel-en.vtt",
+              //         srcLang: "fr",
+              //         default: true,
+              //       },
+              //     ],
+              //   },
+              // }}
             />
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>

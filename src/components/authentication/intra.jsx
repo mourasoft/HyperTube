@@ -8,7 +8,10 @@ export default function Intra(props) {
   const { setAuth } = useContext(AuthContext);
   const history = useHistory();
   useEffect(() => {
-    const code = new URLSearchParams(props.location.search).get("code");
+    const code = new URLSearchParams(props.location.search.substring(1)).get(
+      "code"
+    );
+
     if (code) {
       Instance.post(`/omniauth/intra/login`, { code })
         .then((res) => {
@@ -30,9 +33,11 @@ export default function Intra(props) {
           history.push("/");
           // window.parent.close();
           Message("success", message);
+          window.opener.location.reload(true);
+          window.close();
         })
         .catch((e) => {
-          Message("error", e.response.message);
+          Message("error", e.response?.message);
           history.push("/signin");
         });
     } else {
