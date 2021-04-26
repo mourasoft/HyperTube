@@ -1,9 +1,17 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core";
+import React, { useEffect } from "react";
+// import { makeStyles } from "@material-ui/core";
+import { Form } from '../components/index';
 
 export default function NotFound() {
-  const classes = useStyles();
+  // const classes = useStyles();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.replace("/");
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
   return (
+    
     <div
       style={{
         display: "flex",
@@ -12,24 +20,12 @@ export default function NotFound() {
         backgroundImage: `url("/images/wallpaper.jpg")`,
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
-        backgroundSize: "100%",
+        backgroundSize: "auto 100%",
       }}
     >
-      <h2
-        style={{
-          fontSize: "100px",
-          color: "white",
-        }}
-      >
-        404 Error
-      </h2>
+      <Form.Title>
+        NOT FOUND
+      </Form.Title>
     </div>
-  );
+  )
 }
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    color: "#E4E6EB",
-    marginTop: "5%",
-  },
-}));

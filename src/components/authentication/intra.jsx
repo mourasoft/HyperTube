@@ -28,6 +28,7 @@ export default function Intra(props) {
           }
           setAuth({ language, image: pic, token });
           history.push("/");
+          // window.parent.close();
           Message("success", message);
         })
         .catch((e) => {

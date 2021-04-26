@@ -104,10 +104,12 @@ function Update() {
             if (res.data.status === 200) {
               Message("success", res.data.message);
               // history.push("/library");
+             
+              window.close();
             }
           },
           (error) => {
-            Message("error", error.response.data.message);
+            Message("error", error.response?.data.message);
           }
         );
     }
