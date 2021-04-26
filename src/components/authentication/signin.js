@@ -33,7 +33,6 @@ export default function Signin() {
   function submit() {
     Instance.post("/auth/login", data).then(
       (res) => {
-        // console.log(res.data);
         if (res.data.status === 200) {
           try {
             localStorage.setItem("token", res.data.token);
@@ -54,7 +53,6 @@ export default function Signin() {
         }
       },
       (error) => {
-        console.log(error.response);
         if (error.response) Message("error", error.response?.data.message);
         else Message("error", "Undefined Error");
       }

@@ -55,7 +55,6 @@ function Logged({ LogoutFn }) {
           <Avatar
             onClick={() => {
               history.push("/updatedata");
-              console.log("clicked");
             }}
             src={auth.image}
           />

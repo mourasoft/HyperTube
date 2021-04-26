@@ -146,11 +146,12 @@ const Search = ({ num, handleChange, setMovies, setMovieCount }) => {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem value="title">Title</MenuItem>
-            <MenuItem value="year">Year</MenuItem>
-            <MenuItem value="rating">Rating</MenuItem>
             <MenuItem value="download_count">Downoald</MenuItem>
             <MenuItem value="like_count">Liked</MenuItem>
+            <MenuItem value="rating">Rating</MenuItem>
+            <MenuItem value="seeds">Seeds</MenuItem>
+            <MenuItem value="title">Title</MenuItem>
+            <MenuItem value="year">Year</MenuItem>
           </Select>
         </FormControl>
 

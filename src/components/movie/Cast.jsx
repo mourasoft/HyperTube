@@ -38,7 +38,6 @@ export default function Cast({ sug, movie }) {
             return (
               <div
                 onClick={() => {
-                  console.log("clicked", sug.id);
                   return history.push(`/movie/${sug.id}`);
                 }}
                 key={i}

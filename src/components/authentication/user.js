@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Form } from "../index";
 import { AuthContext } from "../../context/context";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { getInstance, imgUrl } from "../../helpers/instance";
 
 export default function User() {
@@ -9,7 +9,7 @@ export default function User() {
 
   const { auth } = useContext(AuthContext);
   const { id } = useParams();
-
+  const history = useHistory();
   const [data, setData] = useState({
     image: "",
     firstname: "",
@@ -48,7 +48,7 @@ export default function User() {
           }));
         })
         .catch((e) => {
-          console.log("errrrrror");
+          history.replace("/");
         });
     }
     // eslint-disable-next-line

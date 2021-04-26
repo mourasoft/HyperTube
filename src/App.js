@@ -14,11 +14,12 @@ import {
 import { HeaderContainer } from "./containers/header";
 import { FooterContainer } from "./containers/footer";
 import { AuthProvider, IsLoggedfn } from "./context/context";
+import { AuthContext } from "./context/context";
+import { useContext } from "react";
 import Library from "./pages/Library";
 import Movie from "./pages/movie";
-import { useContext } from "react";
 import Watchlist from "./pages/Watchlist";
-import { AuthContext } from "./context/context";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const isAuthenticated = IsLoggedfn();
@@ -69,6 +70,7 @@ function App() {
         <Route path="/signup" component={!isAuthenticated ? Signup : Library} />
         <Route path="/forgot" component={!isAuthenticated ? Forgot : Library} />
         <Route
+          exact
           path="/"
           render={(props) => {
             if (isAuthenticated) {
@@ -76,6 +78,7 @@ function App() {
             } else return <Signin />;
           }}
         />
+        <Route path="*" component={NotFound} />
       </Switch>
       <FooterContainer />
     </Router>

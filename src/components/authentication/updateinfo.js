@@ -4,7 +4,7 @@ import Message from "../notification";
 import { AuthContext } from "../../context/context";
 import useForm from "../../helpers/usefom";
 import validateUpdateinfo from "../../helpers/validateUpdateinfo";
-import { getInstance } from "../../helpers/instance";
+import { getInstance, imgUrl } from "../../helpers/instance";
 
 function Update() {
   const { auth, setAuth } = useContext(AuthContext);
@@ -72,9 +72,8 @@ function Update() {
             language,
           } = res.data.user;
           const t = image.startsWith("https");
-          console.log(t);
-          let img = t ? image : `http://10.12.7.10:5000${image}`;
-          // console.log(image);
+          let img = t ? image : `${imgUrl}${image}`;
+
           setData((old) => ({
             ...old,
             firstname,

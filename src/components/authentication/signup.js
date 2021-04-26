@@ -4,7 +4,7 @@ import Message from "../notification";
 import useForm from "../../helpers/usefom";
 import validateSignUp from "../../helpers/validateSignup";
 import { useHistory } from "react-router-dom";
-import { Instance } from "../../helpers/instance";
+import { Instance, imgUrl } from "../../helpers/instance";
 
 export default function Signup() {
   //// TESTING
@@ -51,7 +51,6 @@ export default function Signup() {
   function submit() {
     Instance.post(`/auth/register`, values).then(
       (res) => {
-        console.log("object");
         if (res.data?.status === 200) {
           history.push("/signin");
           Message("success", res.data.message);
@@ -75,11 +74,7 @@ export default function Signup() {
           <Form.Box>
             <label htmlFor="exampleFormControlFile1">
               <Form.Image
-                src={
-                  data.image
-                    ? data.image
-                    : `http://10.12.7.10:5000/images/default.svg`
-                }
+                src={data.image ? data.image : `${imgUrl}/images/default.svg`}
               />
             </label>
             <input

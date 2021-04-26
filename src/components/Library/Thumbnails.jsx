@@ -17,8 +17,7 @@ const Thumbnails = ({ e, watched, view }) => {
   const {
     auth: { token },
   } = useContext(AuthContext);
-  // console.log(watched);
-  ///movie/watchlist/:id
+
   useEffect(() => {
     if (watched) {
       let filtred = watched.filter((el) => {
@@ -39,6 +38,9 @@ const Thumbnails = ({ e, watched, view }) => {
       .post("/movie/watchlist", { id: e.id })
       .then((res) => {
         // console.log(res);
+      })
+      .catch((e) => {
+        return;
       });
   };
   return (

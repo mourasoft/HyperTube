@@ -31,13 +31,14 @@ export default function Intra(props) {
           Message("success", message);
         })
         .catch((e) => {
-          console.log("error", e.response);
+          Message("error", e.response.message);
+          history.push("/signin");
         });
     } else {
       Message("error", "Wrong Params");
       history.push("/signin");
     }
-       // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

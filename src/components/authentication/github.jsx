@@ -11,7 +11,6 @@ export default function GitHub(props) {
   useEffect(() => {
     const code = new URLSearchParams(props.location.search).get("code");
     if (code) {
-      console.log(code);
       Instance.post(`/omniauth/github/login`, { code })
         .then((res) => {
           const {
@@ -33,13 +32,14 @@ export default function GitHub(props) {
           Message("success", message);
         })
         .catch((e) => {
-          console.log("error", e.response);
+          Message("error", e.response.message);
+          history.push("/signin");
         });
     } else {
       Message("error", "Wrong params");
       history.push("/signin");
     }
-       // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

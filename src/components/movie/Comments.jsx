@@ -19,7 +19,6 @@ export default function Comments({ id }) {
         setComments(comments);
       })
       .catch((e) => {
-        // console.log(e);
         setComments([]);
       });
   }, [token, id]);
