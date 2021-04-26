@@ -26,6 +26,7 @@ function App() {
   const channel = new BroadcastChannel("logout");
   const { setAuth } = useContext(AuthContext);
 
+  console.log("is activated", isAuthenticated);
   channel.addEventListener("message", (event) => {
     setAuth("");
     localStorage.clear();
@@ -35,12 +36,35 @@ function App() {
     <Router>
       <HeaderContainer />
       <Switch>
-        <Route exact path="/confirm/:token" component={Confirm} />
-        <Route exact path="/reset/:token" component={Reset} />
-        <Route exact path="/omniauth/intra" component={Intra} />
-        <Route exact path="/omniauth/github" component={Github} />
-        {/* <Route exact path="/omniauth/intra" component={Omniauth} /> */}
-        <Route path="/watchlist" component={Watchlist} />
+        <Route
+          exact
+          path="/confirm/:token"
+          component={!isAuthenticated ? Confirm : Library}
+        />
+        <Route
+          exact
+          path="/reset/:token"
+          component={!isAuthenticated ? Reset : Library}
+        />
+        <Route
+          exact
+          path="/omniauth/intra"
+          component={!isAuthenticated ? Intra : Library}
+        />
+        <Route
+          exact
+          path="/omniauth/github"
+          component={!isAuthenticated ? Github : Library}
+        />
+
+        <Route
+          path="/watchlist"
+          render={(props) => {
+            if (isAuthenticated) {
+              if (typeof isAuthenticated === "string") return <Watchlist />;
+            } else return <Signin />;
+          }}
+        />
         <Route
           path="/updatedata"
           render={(props) => {

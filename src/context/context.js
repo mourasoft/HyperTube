@@ -10,7 +10,7 @@ try {
 }
 export function AuthProvider(props) {
   const [auth, setAuth] = useState({
-    token: "",
+    token,
     image: "",
     language: "",
   });
