@@ -1,8 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Form } from "../index";
-import { FcGoogle } from "react-icons/fc";
 import { FiGithub } from "react-icons/fi";
-import { GrFacebook } from "react-icons/gr";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../context/context";
 import useForm from "../../helpers/usefom";
@@ -100,12 +98,6 @@ export default function Signin() {
         </Form.Text>
         <Form.Omniauth onClick={() => window.open(urlIntra)}>
           <Gr42school />
-        </Form.Omniauth>
-        <Form.Omniauth type="submit">
-          <GrFacebook />
-        </Form.Omniauth>
-        <Form.Omniauth type="submit">
-          <FcGoogle />
         </Form.Omniauth>
         <Form.Omniauth onClick={() => window.open(urlGithub)}>
           <FiGithub />
