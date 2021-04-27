@@ -11,7 +11,6 @@ const useForm = (callback, validate, values, setValues, errors, setErrors) => {
     e.preventDefault();
     const foundErrors = validate(values);
     setErrors(foundErrors);
-    // console.log(typeof foundErrors);
 
     const valuesPolyfill = function values(object) {
       return Object.keys(object).map((key) => object[key]);

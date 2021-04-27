@@ -1,5 +1,4 @@
 import React from "react";
-import { Link as ReachRouterLink } from "react-router-dom";
 import { Container, ButtonLink, Logo } from "./styles/header";
 
 export default function Header({ bg = true, children, ...restProps }) {

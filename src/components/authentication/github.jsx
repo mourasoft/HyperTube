@@ -14,7 +14,6 @@ export default function GitHub(props) {
     );
 
     if (code) {
-      console.log("im in in gethub signin req");
       Instance.post(`/omniauth/github/login`, { code })
         .then((res) => {
           const {

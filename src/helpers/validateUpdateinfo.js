@@ -11,13 +11,15 @@ export default function validateUpdateinfo({
                                            username,
                                            email,
                                            password,
+                                           type
                                        }) {
+                                        
     const errors = {};
-
     errors.firstname = validateStr(firstname, "First Name");
     errors.lastname = validateStr(lastname, "Last Name");
     errors.email = validateEmail(email, "Email");
     errors.username = validateUser(username, "Username");
-    errors.password = validatePassword(password, "password");
+    if (type === 'LOCAL')
+        errors.password = validatePassword(password, "password");
     return errors;
 }
