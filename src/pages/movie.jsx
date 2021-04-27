@@ -17,6 +17,7 @@ const Movie = () => {
   const [sug, setSug] = useState();
   const history = useHistory();
   const [url, setUrl] = useState("");
+  const [unmount, setUnmount] = useState(false);
   const [sub, setSub] = useState([]);
   const {
     auth: { token },
@@ -57,6 +58,7 @@ const Movie = () => {
        * Get Data
        */
       try {
+        console.log("in movie componnent");
         axios
           .get(
             `https://yts.mx/api/v2/movie_details.json?movie_id=${id}&with_images=true&with_cast=true`
@@ -71,7 +73,7 @@ const Movie = () => {
               getInstance(token)
                 .get(`/subtitle/${movie.imdb_code}`)
                 .then((res) => {
-                  console.log(res.data);
+                  console.log("res sub", res.data);
                   let subs = res.data.subtitles;
                   if (!subs || subs.length === 0) return;
                   let d = document.getElementById("videostream");
@@ -85,7 +87,6 @@ const Movie = () => {
                     track.setAttribute("type", "text/ttml");
                     video.appendChild(track);
                   });
-                  console.log(res.data.subtitles);
                 });
               axios
                 .get(
@@ -102,9 +103,12 @@ const Movie = () => {
           });
       } catch (e) {}
     }
+    setUnmount(true);
     return () => {
       setUrl("");
+      setUnmount(false);
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   const filterd = quality.filter((el) => el);
@@ -114,6 +118,7 @@ const Movie = () => {
       document.title = `${movie?.title_long}`;
     }
   }, [movie]);
+  if (!unmount) return null;
   return (
     <>
       {/* <HeaderContainer /> */}

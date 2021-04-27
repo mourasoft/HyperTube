@@ -6,7 +6,7 @@ import { AuthContext } from "../../context/context";
 import useForm from "../../helpers/usefom";
 import validateSignIn from "../../helpers/validateSignin";
 import Message from "../notification";
-import { Instance, urlGithub, urlIntra } from "../../helpers/instance";
+import { Instance, urlGithub, urlIntra, imgUrl } from "../../helpers/instance";
 
 export default function Signin() {
   const { setAuth } = useContext(AuthContext);
@@ -29,25 +29,27 @@ export default function Signin() {
 
   let history = useHistory();
   function submit() {
+    console.log("im in signin commpoent");
     Instance.post("/auth/login", data).then(
       (res) => {
         if (res.data.status === 200) {
+          const {
+            token,
+            message,
+            data: { language, image },
+          } = res.data;
+
+          const t = image.startsWith("https");
+          let pic = t ? image : `${imgUrl}${image}`;
           try {
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("language", res.data.data.language);
-            localStorage.setItem("image", res.data.data.image);
-            localStorage.setItem("username", res.data.data.username);
+            localStorage.setItem("token", token);
+            localStorage.setItem("language", language);
           } catch (error) {
             return;
           }
-
-          const login = res.data.data.username;
-          const token = res.data.token;
-          const lng = res.data.data.language;
-          const image = res.data.data.image;
-          setAuth({ lng, image, token, login });
+          setAuth({ language, image: pic, token });
           history.push("/");
-          Message("success", res.data.message);
+          Message("success", message);
         }
       },
       (error) => {

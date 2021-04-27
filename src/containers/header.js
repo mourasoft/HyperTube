@@ -29,7 +29,13 @@ function NotLogged() {
   return (
     <Header>
       <Header.Frame>
-        <Header.Logo to={ROUTES.HOME} src={logo} alt="Hypertube" />
+        <Header.Logo
+          onClick={() => {
+            window.location.href = "/";
+          }}
+          src={logo}
+          alt="Hypertube"
+        />
         <Header.ButtonLink to="/Signup">SignUp</Header.ButtonLink>
       </Header.Frame>
     </Header>
@@ -43,7 +49,13 @@ function Logged({ LogoutFn }) {
   return (
     <Header>
       <Header.Frame>
-        <Header.Logo to={ROUTES.HOME} src={logo} alt="Hypertube" />
+        <Header.Logo
+          onClick={() => {
+            window.location.href = "/";
+          }}
+          src={logo}
+          alt="Hypertube"
+        />
 
         <div style={{ display: "flex" }}>
           <Button onClick={() => history.push("/watchlist")}>
@@ -53,6 +65,7 @@ function Logged({ LogoutFn }) {
           </Button>
 
           <Avatar
+            style={{ cursor: "pointer" }}
             onClick={() => {
               history.push("/updatedata");
             }}

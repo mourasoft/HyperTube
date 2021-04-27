@@ -26,7 +26,6 @@ function App() {
   const channel = new BroadcastChannel("logout");
   const { setAuth } = useContext(AuthContext);
 
-  console.log("is activated", isAuthenticated);
   channel.addEventListener("message", (event) => {
     setAuth("");
     localStorage.clear();

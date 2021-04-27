@@ -13,6 +13,7 @@ export default function Intra(props) {
     );
 
     if (code) {
+      console.log("im in in intra signin req");
       Instance.post(`/omniauth/intra/login`, { code })
         .then((res) => {
           const {
@@ -31,7 +32,6 @@ export default function Intra(props) {
           }
           setAuth({ language, image: pic, token });
           history.push("/");
-          // window.parent.close();
           Message("success", message);
           window.opener.location.reload(true);
           window.close();

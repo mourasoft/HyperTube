@@ -11,16 +11,20 @@ export default function Comments({ id }) {
   const [comment, setcomment] = useState("");
   const [comments, setComments] = useState([]);
   useEffect(() => {
+    let unmount;
     if (!token) return;
     getInstance(token)
       .get(`/movie/comment/${id}`)
       .then((res) => {
         const { comments } = res.data;
-        setComments(comments);
+        if (!unmount) setComments(comments);
       })
       .catch((e) => {
-        setComments([]);
+        if (!unmount) setComments();
       });
+    return () => {
+      unmount = true;
+    };
   }, [token, id]);
 
   const handleComment = (e) => {
@@ -29,20 +33,29 @@ export default function Comments({ id }) {
 
   const send = () => {
     let data = comment.trim();
-    if (data.length <= 255) {
+    if (data && data.length <= 255) {
       getInstance(token)
         .post("/movie/comment", { id, comment })
         .then((res) => {
           const { comment, created_at, username, image } = res.data.comment;
-          setComments((old) => [
-            {
-              comment,
-              created_at,
-              username,
-              image,
-            },
-            ...old,
-          ]);
+          comments
+            ? setComments((old) => [
+                {
+                  comment,
+                  created_at,
+                  username,
+                  image,
+                },
+                ...old,
+              ])
+            : setComments([
+                {
+                  comment,
+                  created_at,
+                  username,
+                  image,
+                },
+              ]);
         });
     } else setcomment("");
     setcomment("");
