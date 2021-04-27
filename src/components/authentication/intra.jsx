@@ -13,7 +13,6 @@ export default function Intra(props) {
     );
 
     if (code) {
-      console.log("im in in intra signin req");
       Instance.post(`/omniauth/intra/login`, { code })
         .then((res) => {
           const {

@@ -29,7 +29,6 @@ export default function Signin() {
 
   let history = useHistory();
   function submit() {
-    console.log("im in signin commpoent");
     Instance.post("/auth/login", data).then(
       (res) => {
         if (res.data.status === 200) {

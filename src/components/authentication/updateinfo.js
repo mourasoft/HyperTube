@@ -16,6 +16,7 @@ function Update() {
     email: "",
     password: "",
     language: "",
+    type: ''
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -70,6 +71,7 @@ function Update() {
             email,
             image,
             language,
+            type
           } = res.data.user;
           const t = image.startsWith("https");
           let img = t ? image : `${imgUrl}${image}`;
@@ -82,6 +84,7 @@ function Update() {
             email,
             image: img,
             language,
+            type
           }));
           setAuth((old) => ({ ...old, image: img }));
 
@@ -105,7 +108,7 @@ function Update() {
               Message("success", res.data.message);
               // history.push("/library");
              
-              window.close();
+              // window.close();
             }
           },
           (error) => {
@@ -114,8 +117,6 @@ function Update() {
         );
     }
   }
-  // const t = data.image.startsWith("https");
-
   return (
     <>
       <Form.Title>Update information</Form.Title>
@@ -138,6 +139,7 @@ function Update() {
           placeholder="First Name"
           value={values.firstname}
           onChange={handleChange}
+         disabled={data.type !== "LOCAL" ? true : false}
         />
         {errors.firstname && errors.firstname && (
           <Form.Para>{errors.firstname}</Form.Para>
@@ -147,6 +149,7 @@ function Update() {
           placeholder="Last Name"
           value={values.lastname}
           onChange={handleChange}
+          disabled={data.type !== "LOCAL" ? true : false}
         />
         {errors.lastname && errors.lastname && (
           <Form.Para>{errors.lastname}</Form.Para>
@@ -156,6 +159,7 @@ function Update() {
           placeholder="Username"
           value={values.username}
           onChange={handleChange}
+          disabled={data.type !== "LOCAL" ? true : false}
         />
         {errors.lastname && errors.lastname && (
           <Form.Para>{errors.lastname}</Form.Para>
@@ -166,6 +170,7 @@ function Update() {
           placeholder="Email address"
           value={values.email}
           onChange={handleChange}
+          disabled={data.type !== "LOCAL" ? true : false}
         />
         {errors.email && errors.email && <Form.Para>{errors.email}</Form.Para>}
         <Form.Input
@@ -175,6 +180,7 @@ function Update() {
           autoComplete="off"
           placeholder="Password"
           onChange={handleChange}
+          disabled={data.type !== "LOCAL" ? true : false}
         />
         {errors.password && errors.password && (
           <Form.Para>{errors.password}</Form.Para>
