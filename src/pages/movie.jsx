@@ -2,12 +2,11 @@ import { Container, makeStyles, Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import ReactPlayer from "react-player";
 import { Comments, Cast, Synopsys, HeadMovie } from "../components/index";
 import { host } from "../constants/config";
 import { AuthContext } from "../context/context";
-import { getInstance, imgUrl } from "../helpers/instance";
+import { hostUrl, Backup, api } from "../helpers/instance";
 
 const Movie = () => {
   const classes = useStyles();
@@ -19,7 +18,7 @@ const Movie = () => {
   const [url, setUrl] = useState("");
   const [unmount, setUnmount] = useState(false);
   const {
-    auth: { token },
+    auth: { token, language },
   } = useContext(AuthContext);
   const creatUrl = (el) => {
     const { id, imdb_code } = movie;
@@ -57,9 +56,9 @@ const Movie = () => {
        * Get Data
        */
       try {
-        axios
+        api
           .get(
-            `https://yts.mx/api/v2/movie_details.json?movie_id=${id}&with_images=true&with_cast=true`
+            `/movie_details.json?movie_id=${id}&with_images=true&with_cast=true`
           )
           .then(async (res) => {
             const { data } = res;
@@ -67,38 +66,34 @@ const Movie = () => {
             if (data && data.data.movie.imdb_code !== "tt") {
               const { movie } = data.data;
               await setMovie(movie);
-
-              getInstance(token)
-                .get(`/subtitle/${movie.imdb_code}`)
-                .then((res) => {
-                  let subs = res.data.subtitles;
-                  if (!subs || subs.length === 0) return;
-                  let d = document.getElementById("videostream");
-                  let video = d.getElementsByTagName("video")[0];
-                  video.setAttribute("crossOrigin", "anonymous");
-                  subs.forEach((element) => {
-                    let track = document.createElement("track");
-                    track.setAttribute("kind", "captions");
-                    track.setAttribute("srclang", element.lang);
-                    track.setAttribute("src", `${imgUrl}${element.url}`);
-                    track.setAttribute("type", "text/ttml");
-                    video.appendChild(track);
-                  });
-                });
-              axios
-                .get(
-                  `https://yts.mx/api/v2/movie_suggestions.json?movie_id=${id}`
-                )
-                .then((res) => {
-                  const { movies } = res.data.data;
-                  setSug(movies);
-                });
+              api.get(`/movie_suggestions.json?movie_id=${id}`).then((res) => {
+                const { movies } = res.data.data;
+                setSug(movies);
+              });
               await handleQuality(movie.torrents);
             } else {
               history.replace("/");
             }
           });
-      } catch (e) {}
+      } catch (e) {
+        Backup.get(
+          `/movie_details.json?movie_id=${id}&with_images=true&with_cast=true`
+        ).then(async (res) => {
+          const { data } = res;
+
+          if (data && data.data.movie.imdb_code !== "tt") {
+            const { movie } = data.data;
+            await setMovie(movie);
+            Backup.get(`/movie_suggestions.json?movie_id=${id}`).then((res) => {
+              const { movies } = res.data.data;
+              setSug(movies);
+            });
+            await handleQuality(movie.torrents);
+          } else {
+            history.replace("/");
+          }
+        });
+      }
     }
     setUnmount(true);
     return () => {
@@ -118,13 +113,10 @@ const Movie = () => {
   if (!unmount) return null;
   return (
     <>
-      {/* <HeaderContainer /> */}
       <Container maxWidth="lg">
         <div className={classes.paper}>
           <HeadMovie movie={movie} />
           <Synopsys movie={movie} />
-          {/* <span style={{ color: "red" }}>{quality.HD.quality}</span> */}
-
           <div style={{ marginTop: "64px", marginBottom: "64px" }}>
             <ReactPlayer
               id="videostream"
@@ -132,33 +124,35 @@ const Movie = () => {
               width="100%"
               height="auto"
               url={url}
-              // light={movie?.large_cover_image}
+              config={{
+                file: {
+                  attributes: { crossOrigin: "true" },
 
-              // config={{
-              //   file: {
-              //     tracks: [
-              //       {
-              //         kind: "fr",
-              //         src:
-              //           "http://iandevlin.github.io/mdn/video-player-with-captions/subtitles/vtt/sintel-en.vtt",
-              //         srcLang: "fr",
-              //         default: true,
-              //       },
-              //     ],
-              //   },
-              // }}
+                  tracks: [
+                    {
+                      kind: "captions",
+                      src: `${hostUrl}/subtitle/${movie?.imdb_code}/fr`,
+                      srcLang: "fr",
+                      default: language === "FR",
+                    },
+                    {
+                      kind: "captions",
+                      src: `${hostUrl}/subtitle/${movie?.imdb_code}/en`,
+                      srcLang: "en",
+                      default: language === "EN",
+                    },
+                    {
+                      kind: "captions",
+                      src: `${hostUrl}/subtitle/${movie?.imdb_code}/ar`,
+                      srcLang: "ar",
+                    },
+                  ],
+                },
+              }}
             />
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            {/* <Button color="secondary" variant="contained">
-              {quality.HD.quality}
-            </Button>
-            <Button color="secondary" variant="outlined">
-              {quality.FHD.quality}
-            </Button> */}
-
             {filterd.map((el, i) => (
-              // <span key={i}>{el.quality}</span>
               <Button
                 onClick={() => creatUrl(el)}
                 style={{ margin: "5px" }}
