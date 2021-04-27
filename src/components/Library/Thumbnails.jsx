@@ -30,15 +30,17 @@ const Thumbnails = ({ e, watched, view }) => {
         return el.movie_id === e.id;
       });
       if (filtred.length) setSeen(true);
+      else setSeen(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watched, view]);
+    return () => {
+      setSeen(false);
+      setWatch(false);
+    };
+  }, [watched, view, seen, e]);
   const addWatch = () => {
     getInstance(token)
       .post("/movie/watchlist", { id: e.id })
-      .then((res) => {
-        // console.log(res);
-      })
+      .then((res) => {})
       .catch((e) => {
         return;
       });
@@ -54,9 +56,17 @@ const Thumbnails = ({ e, watched, view }) => {
         </div>
       </div>
       <div className={classes.gradien}></div>
-      <div className={classes.vue}>
-        <i>{seen ? <Vue /> : ""}</i>
-      </div>
+
+      {seen ? (
+        <div className={classes.vue}>
+          <i>
+            <Vue />
+          </i>
+        </div>
+      ) : (
+        ""
+      )}
+
       <div
         onClick={() => {
           return history.push(`/movie/${e.id}`);

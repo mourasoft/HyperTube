@@ -30,7 +30,7 @@ export const BackupAllMovie = axios.create({
 });
 
 export const Backup = axios.create({
-  baseURL: `https://yts.megaproxy.biz/api/v2/list_movies.json`,
+  baseURL: `https://yts.megaproxy.biz/api/v2`,
 });
 export const urlIntra = `http://api.intra.42.fr/oauth/authorize?client_id=57b5ab3c42e7495e50cb4a00cb262df5cd809cbecd97e8ef879eee6199287c7b&redirect_uri=${front}/omniauth/intra&response_type=code`;
 export const urlGithub = `https://github.com/login/oauth/authorize?client_id=365d2eca620e2290f5ad&redirect_uri=${front}/omniauth/github`;

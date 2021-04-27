@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Header } from "../components";  
+import { Header } from "../components";
 import logo from "../hypertube.png";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import { Avatar, Button } from "@material-ui/core";
