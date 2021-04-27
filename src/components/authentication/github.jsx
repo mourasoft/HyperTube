@@ -32,10 +32,10 @@ export default function GitHub(props) {
             return;
           }
           setAuth({ language, image: img, token });
-          // history.push("/");
+          history.push("/");
           Message("success", message);
-          // window.opener.location.reload(true);
-          // window.close();
+          window.opener.location.reload(true);
+          window.close();
         })
         .catch((e) => {
           Message("error", e.response?.message);
