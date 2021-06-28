@@ -1,15 +1,15 @@
 const axios = require('axios');
-
+const config = require('../config/config');
 
 
 
 exports.getaccesstoken = async (code) => {
     const params = {
         grant_type : 'authorization_code',
-        client_id : '791d92daa8ac1927d930283144619d3eda91398e7a7a65e19c5a767aa6356ce0',
-        client_secret : 'b9446682809b587c8decaa0c533d7cce7a23ecc1fe143c9672a1adb430182674',
+        client_id : '57b5ab3c42e7495e50cb4a00cb262df5cd809cbecd97e8ef879eee6199287c7b',
+        client_secret : 'a0dbb1632f3668beebaf311dd7c73851b4904bbd68d4b8a22fda91861f2263cf',
         code : code,
-        redirect_uri : 'http://google.com'
+        redirect_uri : `${config.host}:${config.ports.client}/omniauth/intra`
     }
 
     
@@ -22,7 +22,6 @@ exports.getaccesstoken = async (code) => {
     }
 }
 
-
 exports.getuser = async (access_token) => {
     try {
         const response = await axios.get('https://api.intra.42.fr/v2/me', {
@@ -30,7 +29,7 @@ exports.getuser = async (access_token) => {
                'Authorization' : `Bearer ${access_token}`
            } 
         });
-        
+
         const user = {
             'firstname' : response.data.first_name,
             'lastname': response.data.last_name,

@@ -29,3 +29,19 @@ exports.password = (password) => {
 
 
 
+exports.image = async (image) => {
+	const FileType = require('file-type');
+	
+	image = image.split(',')[1];
+	let b = Buffer.from(image, 'base64');
+	let e = await FileType.fromBuffer(b);
+
+	if (!e)
+		return false;
+	return ['jpeg', 'jpg', 'png'].includes(e.ext);
+}
+
+
+exports.language = (lan) => {
+	return ['EN', 'FR'].includes(lan);
+}

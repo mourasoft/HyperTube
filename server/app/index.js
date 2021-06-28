@@ -3,19 +3,27 @@ const bodyparser = require('body-parser');
 const app = express();
 const config = require('./config/config');
 const routes = require('./routes/routes');
-const cron = require('./config/cron');
 
 const cors = require('cors');
 
+const cron = require('./utils/cron');
+
+
+cron.start();
 
 app.use(cors());
 
-app.use(bodyparser.json({limit: '5mb'}));
+app.use(bodyparser.json({ limit: '5mb' }));
+
+
 app.use('/images', express.static('images'));
-cron()
+app.use('/subtitle', (req, res, next) => {
+	res.setHeader('content-type', 'text/vtt');
+	next();
+},
+express.static('movies/subtitles'));
 
 app.use((req, res, next) => {
-	console.log('a request made from:', req.hostname);
 	next();
 });
 
@@ -30,4 +38,4 @@ app.use((req, res, next) => {
 });
 
 config.path = __dirname;
-app.listen(config.ports.server, console.log(`server is running on ${config.host}:${config.ports.server}`));
+app.listen(config.ports.server);

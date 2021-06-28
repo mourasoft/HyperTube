@@ -24,18 +24,27 @@ services:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
 
-  backend:
+  server:
     build: server/.
     command: bash -c "sleep 20; cd /code/app/; npm run dev;"
     ports:
       - 5000:5000
     links:
       - db:db
-    volumes:
-      - ./server/app:/code/app
-      - /code/app/node_modules
+    # volumes:
+    #   - ./server/app:/code/app
+    #   - /code/app/node_modules
     env_file:
       - server/.env
+    restart: on-failure
+
+
+  front:
+    build: front/.
+    ports:
+      - 3000:3000
+    links:
+      - server:server
     restart: on-failure
 
 

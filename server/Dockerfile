@@ -8,11 +8,13 @@ RUN npm install -g npm@7.8.0
 
 
 # Install tools & libraries
-RUN apt-get -y install apt-utils wget dialog \
-    build-essential git curl libcurl3 libcurl3-dev zip ssmtp libpng-dev
+RUN apt-get -y install apt-utils wget dialog build-essential git curl libcurl3 libcurl3-dev zip ssmtp libpng-dev
+
+RUN apt-get install -y libvpx-dev
+RUN apt-get install -y libvorbis-dev
 
 
-RUN apt-get install ffmpeg -y
+RUN apt-get install -y ffmpeg
 
 RUN echo 'TLS_CA_FILE=/etc/pki/tls/certs/ca-bundle.crt' >> /etc/ssmtp/ssmtp.conf
 RUN echo 'root=hypertubematcha@gmail.com' >> /etc/ssmtp/ssmtp.conf
@@ -35,5 +37,5 @@ RUN chown -R www-data:www-data .
 
 # CMD ["tail", "-f", "/dev/null"]
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "start" ]
 

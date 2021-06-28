@@ -1,12 +1,12 @@
 const router = require('express').Router();
 const intra = require('../controllers/intra');
+const github = require('../controllers/github');
 
 
 
-
-router.post('/intra/register', intra.register);
 router.post('/intra/login', intra.login);
 
+router.post('/github/login', github.login);
 
 
 

@@ -5,12 +5,13 @@ CREATE TABLE `users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `firstname` VARCHAR(20) NOT NULL,
     `lastname` VARCHAR(20) NOT NULL,
-    `username` VARCHAR(50) NOT NULL,
-    `email` VARCHAR(255) NOT NULL,
+    `username` VARCHAR(50) UNIQUE NOT NULL,
+    `email` VARCHAR(255) UNIQUE NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `image` TEXT DEFAULT NULL,
     `verified` TINYINT DEFAULT 0,
     `language` ENUM('EN', 'FR') DEFAULT 'EN',
+    `type` ENUM('LOCAL', 'INTRA', 'GIT') DEFAULT 'LOCAL',
     `created_at` DATETIME DEFAULT NOW()
 );
 
@@ -25,8 +26,8 @@ CREATE TABLE `tokens` (
 );
 
 CREATE TABLE `movies` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `imdb` VARCHAR(255) NOT NULL,
+    `id` INT PRIMARY KEY NOT NULL,
+    `imdb` VARCHAR(255) DEFAULT NULL,
     `last_seen` DATETIME DEFAULT NOW(),
     `created_at` DATETIME DEFAULT NOW(),
     UNIQUE KEY (`imdb`)
@@ -49,7 +50,8 @@ CREATE TABLE `watches` (
     `movie_id` INT NOT NULL,
     `created_at` DATETIME DEFAULT NOW(),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`)
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`),
+    UNIQUE KEY (`user_id`, `movie_id`)
 );
 
 CREATE TABLE `watch_list` (
@@ -65,7 +67,7 @@ CREATE TABLE `comments` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL,
     `movie_id` INT NOT NULL,
-    `comments` TEXT NOT NULL,
+    `comment` TEXT NOT NULL,
     `created_at` DATETIME DEFAULT NOW(),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`)

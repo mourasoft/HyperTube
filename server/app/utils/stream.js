@@ -1,19 +1,21 @@
-const fs = require('fs'); 
+const fs = require('fs');
 const config = require('../config/config');
 const torrentStream = require('torrent-stream');
 const mime = require('mime-types');
 const db = require('../utils/db');
 
+const stream = require('stream');
 
-const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+
+
 const ffmpeg = require("fluent-ffmpeg");
-ffmpeg.setFfmpegPath(ffmpegPath);
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 
+const leak = require('../utils/leakkiller');
 
 
 exports.torrent = async (res, range, m) => {
-    
-    console.log('stream torrent', m.hash);
+
     try {
         const engine = torrentStream(`magnet:?xt=urn:btih:${m.hash}`, {
             trackers: [
@@ -28,88 +30,76 @@ exports.torrent = async (res, range, m) => {
             ],
             path: `${config.path}/movies/${m.hash}`
         });
-    
+
         engine.on('ready', async () => {
 
-                const files = engine.files;
-                const file = files.reduce((a, b) =>  {
-                    return (a.length > b.length ? a : b)
-                }, files[0]);
-    
-                engine.current = file;
-                const contentType = mime.lookup(file.name);
+            const files = engine.files;
+            const file = files.reduce((a, b) => {
+                return (a.length > b.length ? a : b)
+            }, files[0]);
 
-                if (['video/mp4', 'video/webm', 'video/ogg'].includes(contentType)) {
-                    if (m.status == 'N') {
-                        console.log(m.hash, 'start downloading...');
-                        file.select();
-                        await db.update('hashes', 'status', 'D', 'hash', m.hash);
-                        await db.update('hashes', 'path', `${config.path}/movies/${m.hash}/${file.path}`, 'hash', m.hash);
-                    }
+            engine.current = file;
 
-                    const videoSize = file.length;
-                    const CHUNK_SIZE = (10 ** 6) * 1; // 1MB
-                    const start = Number(range.replace(/\D/g, ""));
-                    const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+            const contentType = mime.lookup(file.name);
 
-                    const contentLength = end - start + 1;
+            const types = [
+                'video/mp4',
+                'video/webm',
+                'video/ogg',
+                'video/x-matroska'
+            ]
 
-                    // HTTP Status 206 for Partial Content
-                    res.statusCode = 206;
-                    res.setHeader('Content-Range', `bytes ${start}-${end}/${videoSize}`);
-                    res.setHeader('Accept-Ranges', 'bytes');
-                    res.setHeader('Content-Length', contentLength);
-                    res.setHeader('Content-Type', contentType);
+            // suported video format
+            if (types.includes(contentType) == false)
+                return res.status(415).end();
 
-                    // create video read stream for this particular chunk
-                    const stream = file.createReadStream({ start, end });
-            
-                    stream.pipe(res);
-
-                } else if ('video/x-matroska' == contentType) {
-
-                    if (m.status == 'N') {
-                        console.log(m.hash, 'start downloading...');
-                        file.select();
-                        await db.update('hashes', 'status', 'D', 'hash', m.hash);
-                        await db.update('hashes', 'path', `${config.path}/movies/${m.hash}/${file.path}`, 'hash', m.hash);
-                    }
-
-                    ///usr/bin/ffmpeg /usr/share/ffmpeg /usr/share/man/man1/ffmpeg.1.gz
-                    const stream = file.createReadStream();
-
-                    ffmpeg(stream)
-                    .format('webm')
-                    .on("start", () => console.log("Conversion started..."))
-                    .on("error", error => { console.log('Conversion error', error)})
-                    .stream().pipe(res);
-
-                } else
-                    res.status(415).end();
-                
-        });
+            if (m.status == 'N') {
+                await db.pool.query(`UPDATE hashes SET status = 'D', path = ? WHERE hash = ?`, 
+                [`${config.path}/movies/${m.hash}/${file.path}`, m.hash]);
+                file.select();
+            }
 
         
-        engine.on('download', (index, piece) => {
-                const file = engine.current;
-                const total = `${(file.length / (1024 * 1024)).toFixed(2)} mb`.padEnd();
-                const chunk = `${(engine.swarm.downloaded/ (1024 * 1024)).toFixed(2)} mb`.padEnd(10);
-                const percent = Math.round((100 * engine.swarm.downloaded) / file.length);
+            const s = file.createReadStream();
 
-                const message = `${engine.infoHash}  ${chunk}  ${total.padEnd(10)}  ${percent} %`
-                console.log(message);
+
+            res.setHeader('Content-Type', contentType);
+
+
+            if (['video/mp4', 'video/webm', 'video/ogg',].includes(contentType)) {
+                res.setHeader('Content-Type', contentType);
+
+                stream.pipeline(s, res, (err) => {
+                    if (err) return ;
+                });
+                leak.free(s, res);
+            }
+            else {
+                res.setHeader('Content-Type', 'video/webm');
+                convert(s, res);
+            }
+
         });
-    
-    
+
+
+        engine.on('download', (index, piece) => {
+            const file = engine.current;
+            const total = `${(file.length / (1024 * 1024)).toFixed(2)} mb`.padEnd();
+            const chunk = `${(engine.swarm.downloaded / (1024 * 1024)).toFixed(2)} mb`.padEnd(10);
+            const percent = Math.round((100 * engine.swarm.downloaded) / file.length);
+
+            const message = `${engine.infoHash}  ${chunk}  ${total.padEnd(10)}  ${percent} %`
+        });
+
+
         engine.on('idle', async () => {
             const file = engine.current
             if (engine.swarm.downloaded >= file.length) {
-                console.log(engine.infoHash, 'downloaded successfully', engine.swarm.downloaded, '/', file.length);
                 await db.update('hashes', 'status', 'F', 'hash', m.hash);
                 engine.destroy();
             }
         });
-    
+
     } catch (error) {
         throw error;
     }
@@ -118,37 +108,57 @@ exports.torrent = async (res, range, m) => {
 
 
 exports.local = (res, range, m) => {
-
-    console.log('stream local', m.hash);
     try {
 
         const contentType = mime.lookup(m.path);
-        
-        // get video stats (about 61MB)
-        const videoSize = fs.statSync(m.path).size;
-    
-        // Parse Range
-        // Example: "bytes=32324-"
-        const CHUNK_SIZE = (10 ** 6) * 0.5; // 1MB
-        const start = Number(range.replace(/\D/g, ""));
-        const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-    
-        // Create headers
-        const contentLength = end - start + 1;
-        const headers = {
-        "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-        "Accept-Ranges": "bytes",
-        "Content-Length": contentLength,
-        "Content-Type": contentType,
-        };
-    
-        // HTTP Status 206 for Partial Content
-        res.writeHead(206, headers);
-    
-        // create video read stream for this particular chunk
-        const stream = fs.createReadStream(m.path, { start, end });
-        stream.pipe(res);
-    
+
+        if (!range) {
+            const s = fs.createReadStream(m.path);
+
+            if (['video/mp4', 'video/webm', 'video/ogg',].includes(contentType)){
+                res.setHeader('Content-Type', contentType);
+                stream.pipeline(s, res, (err) => {
+                    if (err) return ;
+                });
+                leak.free(s, res);
+            }
+            else {
+                res.setHeader('Content-Type', 'video/webm');
+                convert(s, res);
+            }
+            return;
+        }
+
+        if (['video/mp4', 'video/webm', 'video/ogg',].includes(contentType)) {
+
+            const videoSize = fs.statSync(m.path).size;
+
+            const CHUNK_SIZE = (10 ** 6) * 0.5;
+            const start = Number(range.replace(/\D/g, ""));
+            const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+            res.statusCode = 206;
+            res.setHeader('Content-Range', `bytes ${start}-${end}/${videoSize}`);
+            res.setHeader('Accept-Ranges', 'bytes');
+            res.setHeader('Content-Length', `${end - start + 1}`);
+            res.setHeader('Content-Type', contentType);
+
+            const s = fs.createReadStream(m.path, { start, end });
+
+            stream.pipeline(s, res, (err) => {
+                if (err) return ;
+            });
+
+            leak.free(s, res);
+
+        } else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'video/webm');
+
+            const s = fs.createReadStream(m.path);
+            convert(s, res);
+        }
+
     } catch (error) {
         throw error;
     }
@@ -156,19 +166,21 @@ exports.local = (res, range, m) => {
 
 
 
-const convert = (file, thread = 4) => {
-	const converted = new ffmpeg(file.createReadStream())
-		.videoCodec('libvpx')
-		.audioCodec('libvorbis')
-		.format('webm')
-		.audioBitrate(128)
-		.videoBitrate(8000)
-		.outputOptions([
-			`-threads ${thread}`,
-			'-deadline realtime',
-			'-error-resilient 1'
-		])
-		.on('error', err => converted.destroy())
-		.stream()
-	return converted
+
+const convert = (s, res) => {
+
+    const r = ffmpeg(s)
+        .setFfmpegPath(ffmpegPath)
+        .format('webm')
+        .videoCodec('libvpx')
+        .audioCodec('libvorbis')
+        .on('progress', (p) => {})
+        .on('start', (a) => {})
+        .on('error', (e) => {});
+
+    stream.pipeline(r, res, (err) => {
+        if (err) return ;
+    });
+
+    leak.free(s, res);
 }

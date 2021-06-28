@@ -3,7 +3,7 @@ const db = require('../utils/db');
 const valid = require('../utils/validation');
 const mail = require('../utils/mail');
 const token = require('../utils/token');
-
+const upload = require('../utils/upload');
 
 
 exports.me = async (req, res) => {
@@ -30,19 +30,26 @@ exports.info = async (req, res) => {
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
     const username = req.body.username;
+    const language = req.body.language;
     const email = req.body.email;
     const password = req.body.password;
-
-
-    if (!firstname || !lastname || !username || !email)
-        return res.status(400).json({ 'status': 400, 'message': 'missing parameters'});
-
-    if (!password)
-        return res.status(400).json({ 'status': 400, 'message': 'password required'});
 
     try {
         user = await db.select(null, 'users', ['id'], [user.id]);
         user = user[0];
+
+        if (user.type != 'LOCAL') {
+            if (language != user.language )
+                await db.update('users', 'language', language, 'id', user.id);
+            return res.status(200).json({'status': 200, 'message': 'language changed successfully'});
+        }
+
+        if (!firstname || !lastname || !username || !email || !language)
+            return res.status(400).json({ 'status': 400, 'message': 'missing parameters'});
+
+        if (!password)
+            return res.status(400).json({ 'status': 400, 'message': 'password required'});
+
         
         if (!bcrypt.compareSync(password, user.password))
             return res.status(400).json({ 'status': 400, 'message': 'password incorrect'});
@@ -59,6 +66,10 @@ exports.info = async (req, res) => {
         if (!valid.email(email))
             return res.status(400).json({ 'status': 400, 'message': 'email not valid'});
 
+        if (!valid.language(language))
+            return res.status(400).json({ 'status': 400, 'message': 'language is not valid'});
+        
+        
         // check if username already taken then update
         if (username != user.username) {
             let data = await db.select(null, 'users', ['username'], [username]);
@@ -82,11 +93,13 @@ exports.info = async (req, res) => {
 
         if (lastname != user.lastname)
             await db.update('users', 'lastname', lastname, 'id', user.id);
+        
+        if (language != user.language)
+            await db.update('users', 'language', language, 'id', user.id);
 
         res.status(200).json( {'status': 200, 'message': 'updated successfully'});
         
     } catch (error) {
-        console.log('update error:', error);
         res.status(500).json({'status': 500, 'message': error.message});
     }
 }
@@ -118,6 +131,9 @@ exports.password = async (req, res) => {
         user = await db.select(null, 'users', ['id'], [user.id]);
         user = user[0];
 
+        if (user.type != 'LOCAL')
+            return res.status(400).json({'status': 400, 'message': 'You don\'t have permission to change password'})
+        
         if (!bcrypt.compareSync(password, user.password))
             return res.status(400).json({ 'status': 400, 'message': 'password incorrect'});
         
@@ -134,18 +150,64 @@ exports.password = async (req, res) => {
         
         res.status(200).json( {'status': 200, 'message': 'password updated successfully'});
     } catch (error) {
-        console.log('error:', error);
         res.status(500).json({ 'status': 500, 'message': error.message});
     }
 }
 
 
 exports.upload = async (req, res) => {
-
-    
     const user = req.user;
+    let image = req.body.image;
 
 
-    res.status(200).json({'user' : user});
+    if (!image)
+        return res.status(400).json({ 'status': 400, 'message': 'missing params'});
+    
+    if (! await valid.image(image))
+        return res.status(400).json({ 'status' : 400, 'message': 'image not valid'});
+
+    try {
+        image = await upload.upload(image);
+        db.update('users', 'image', image, 'id', user.id);
+        res.status(200).json({'status': 200, 'message': 'image uploaded successfully','image': image});
+    } catch (error) {
+        res.status(500).json({ 'status': 500, 'message': error.message });
+    }
+}
+
+
+exports.username = async (req, res) => {
+
+    const username = req.params.username;
+
+    if (!username)
+        return res.status(400).json({'status': 400, 'message': 'missing params'});
+
+    try {
+        
+        let u = await db.select(null, 'users', ['username'], [username]);
+        
+        if (!u || u.length == 0)
+            return res.status(400).json({'status': 400, 'message': 'user not found'});
+        u = u[0];
+
+        let w = await db.pool.query('SELECT COUNT(*) as w FROM watches WHERE user_id = ?', u.id);
+        let c = await db.pool.query('SELECT COUNT(*) as c FROM watch_list WHERE user_id = ?', u.id);
+
+        u.watches = w[0].w;
+        u.favorite = c[0].c;
+        
+        delete u.email;
+        delete u.password;
+        delete u.verified;
+        delete u.created_at;
+
+        res.status(200).json({'status': 200, 'data': u});
+
+    } catch (error) {
+        res.status(500).json({'status': 500, 'message': 'username not found'})
+    }
 
 }
+
+
